@@ -6,10 +6,13 @@ class Player : public Object{
         float accelerationY;
         float speedX;
         float speedY;
+        int frameAnim;
+        int frameTime;
         bool run = false;
 
         void updateVertical();
         void updateHorizontal();
+        void updateAnimation();
     
     public:
         Player();

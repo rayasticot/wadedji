@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -7,6 +7,8 @@
 
 #include "object.hpp"
 #include "player.hpp"
+#include "gfxhandler.hpp"
+extern GfxHandler gfx;
 
 #define H_SPEED_LIMIT 2
 #define H_ACC 0.5
@@ -25,13 +27,19 @@ Player::Player(){
     positionY = 80;
     speedX = 0;
     speedY = 0;
-    sizeX = 16;
+    sizeX = 32;
     sizeY = 32;
-    NF_CreateSprite(0, 0, 0, 0, positionScreenX, positionScreenY);
+    if(gfx.spriteArray[0].getSlotMemory() == -1){
+        gfx.spriteArray[0].loadInMemory();
+    }
+    if(gfx.paletteArray[0].getSlotMemory() == -1){
+        gfx.paletteArray[0].loadInMemory();
+    }
+    NF_CreateSprite(0, 0, gfx.spriteArray[0].getSlotMemory(), gfx.paletteArray[0].getSlotMemory(), positionScreenX, positionScreenY);
 }
 
 void Player::updateVertical(){
-    if(checkRangeMapCollisionX(0, positionX, positionY+sizeY, 2) == false){
+    if(checkRangeMapCollisionX(0, positionX+10, positionY+sizeY, 2) == false){
         if(speedY < 0 && !(KEY_A & keysHeld())) speedY = 0;
         accelerationY = V_GRAVITY_ACC;
         speedY += accelerationY;
@@ -44,12 +52,12 @@ void Player::updateVertical(){
             speedY = V_JUMP_START_SPEED;
         }
     }
-    if(checkRangeMapCollisionX(0, positionX, positionY, 2) == true){
+    if(checkRangeMapCollisionX(0, positionX+10, positionY, 2) == true){
         speedY = 0.1;
     }
     if(speedY > 0){
         for(int i = 0; i <= (int)speedY; i++){
-            if(checkRangeMapCollisionX(0, positionX, positionY+sizeY+i, 2) == false) positionY++;
+            if(checkRangeMapCollisionX(0, positionX+10, positionY+sizeY+i, 2) == false) positionY++;
             else break;
         }
         positionY += (speedY - (int)speedY);
@@ -88,8 +96,8 @@ void Player::updateHorizontal(){
     }
     
     u8 side_pixel_add = 0;
-    if(speedX > 0) side_pixel_add = 16; 
-    if(checkRangeMapCollisionY(0, positionX+speedX+side_pixel_add, positionY, 4) == false){
+    if(speedX > 0) side_pixel_add = 14; 
+    if(checkRangeMapCollisionY(0, positionX+speedX+side_pixel_add+10, positionY, 4) == false){
         positionX += speedX;
     }
     else{
@@ -97,9 +105,40 @@ void Player::updateHorizontal(){
     }
 }
 
+void Player::updateAnimation(){
+    if(speedY != 0){
+        frameAnim = 0;
+    }
+    else if(speedX != 0){
+        frameTime++;
+        frameTime = frameTime%8;
+        if(frameTime == 7){
+            frameAnim++;
+            frameAnim = frameAnim%4;
+        }
+    }
+    else{
+        frameAnim = 1;
+        frameTime = 0;
+    }
+
+    if(speedX > 0){
+        NF_HflipSprite(0, 0, false);
+    }
+    else if(speedX < 0){
+        NF_HflipSprite(0, 0, true);
+    }
+
+    int actualFrame = frameAnim;
+    if(actualFrame == 3) actualFrame = 1;
+
+    NF_SpriteFrame(0, 0, actualFrame);
+}
+
 void Player::updatePlayer(){
     updateVertical();
     updateHorizontal();
+    updateAnimation();
     moveCamToPos();
     NF_MoveSprite(0, 0, positionScreenX, positionScreenY);
 }

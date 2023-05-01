@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -7,6 +7,8 @@
 
 #include "object.hpp"
 #include "player.hpp"
+#include "gfxhandler.hpp"
+GfxHandler gfx;
 
 int main(int argc, char **argv){
     NF_Set2D(0, 0);
@@ -21,10 +23,12 @@ int main(int argc, char **argv){
 	mmInitDefault("nitro:/soundbank.bin");
 	NF_InitCmapBuffers();
 
-    NF_LoadSpriteGfx("kirikou", 0, 16, 32);
-	NF_LoadSpritePal("kirikou", 0);
-	NF_VramSpriteGfx(0, 0, 0, false);
-	NF_VramSpritePal(0, 0, 0);
+	for(int i = 0; i < 128; i++){
+		gfx.spriteMemoryMap[i] = -1;
+	}
+	for(int i = 0; i < 16; i++){
+		gfx.paletteMemoryMap[i] = -1;
+	}
 
     NF_LoadColisionMap("coltes", 0, 768, 768);
 

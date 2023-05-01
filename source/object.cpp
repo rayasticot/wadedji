@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -17,17 +17,17 @@ void Object::moveCamToPos(){
     int camPositionX = 0;
     int camPositionY = 0;
     
-    //int positionScreenCenterX = 120;
-    //int positionScreenCenterY = 80;
+    const int positionScreenCenterX = (SIZE_SCREEN_X-sizeX)/2;
+    const int positionScreenCenterY = (SIZE_SCREEN_Y-sizeY)/2;
 
-    positionScreenX = 120;
-    positionScreenY = 80;
+    positionScreenX = positionScreenCenterX;
+    positionScreenY = positionScreenCenterY;
 
-    if(positionX < 120){
+    if(positionX < positionScreenCenterX){
         positionScreenX = positionX;
         flagNotCenterX = true;
     }
-    if(positionY < 80){
+    if(positionY < positionScreenCenterY){
         positionScreenY = positionY;
         flagNotCenterY = true;
     }
@@ -41,10 +41,10 @@ void Object::moveCamToPos(){
     }
 
     if(flagNotCenterX == false){
-        camPositionX = positionX-120;
+        camPositionX = positionX-positionScreenCenterX;
     }
     else{
-        if(positionX < 120){
+        if(positionX < positionScreenCenterX){
             camPositionX = 0;
         }
         if(positionX > 768/**/-136){
@@ -53,10 +53,10 @@ void Object::moveCamToPos(){
     }
 
     if(flagNotCenterY == false){
-        camPositionY = positionY-80;
+        camPositionY = positionY-positionScreenCenterY;
     }
     else{
-        if(positionY < 80){
+        if(positionY < positionScreenCenterY){
             camPositionY = 0;
         }
         if(positionY > 768/**//**/-112){
