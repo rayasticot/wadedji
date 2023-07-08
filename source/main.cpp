@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -7,8 +8,16 @@
 
 #include "object.hpp"
 #include "player.hpp"
-#include "gfxhandler.hpp"
-GfxHandler gfx;
+#include "caca.hpp"
+#include "gfx.hpp"
+#include "background.hpp"
+
+void crashGame(std::string message){
+	consoleDemoInit();
+	consoleClear();
+	iprintf(message.data());
+	while(1){}
+}
 
 int main(int argc, char **argv){
     NF_Set2D(0, 0);
@@ -20,27 +29,35 @@ int main(int argc, char **argv){
 	NF_InitTiledBgBuffers();
 	NF_InitTiledBgSys(0);
 	NF_InitTiledBgSys(1);
-	mmInitDefault("nitro:/soundbank.bin");
+	mmInitDefault(std::string("nitro:/soundbank.bin").data());
 	NF_InitCmapBuffers();
 
-	for(int i = 0; i < 128; i++){
-		gfx.spriteMemoryMap[i] = -1;
-	}
-	for(int i = 0; i < 16; i++){
-		gfx.paletteMemoryMap[i] = -1;
-	}
+    LevelBackground testBg("bgfile.bgjim");
+	testBg.loadCol();
+	testBg.loadBg(4);
+	testBg.createBg(4);
+	GfxGroup testGfx("gfxfile.gfxjim", 0, 0, 0);
+	testGfx.loadSpr(128);
+	testGfx.loadPal(16);
 
-    NF_LoadColisionMap("coltes", 0, 768, 768);
+    Player wadedji(0, 0, 0, 180, 100);
+	Caca caca(1, 1, 1, 100, 100);
 
-	NF_LoadTiledBg("cavetes", "mur", 768, 768);
-	NF_CreateTiledBg(0, 0, "mur");
-
-    Player wadedji;
+	int camX = 0;
+	int camY = 0;
+	int oldcamX = camX;
+	int oldcamY = camY;
 
     while(1){
 		scanKeys();
-        wadedji.updatePlayer();
-
+		wadedji.update();
+		caca.update();
+		wadedji.moveCamToPos(&camX, &camY, testBg.getMapSizeX(), testBg.getMapSizeY());
+		testBg.scrollBg(4, oldcamX, oldcamY);
+		wadedji.updateSprite(oldcamX, oldcamY, testBg.getMapSizeX(), testBg.getMapSizeY());
+		caca.updateSprite(oldcamX, oldcamY, testBg.getMapSizeX(), testBg.getMapSizeY());
+		oldcamX = camX;
+		oldcamY = camY;
 		NF_SpriteOamSet(0);
 		NF_SpriteOamSet(1);
 

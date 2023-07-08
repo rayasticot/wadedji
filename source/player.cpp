@@ -7,49 +7,34 @@
 
 #include "object.hpp"
 #include "player.hpp"
-#include "gfxhandler.hpp"
-extern GfxHandler gfx;
-
-#define H_SPEED_LIMIT 2
-#define H_ACC 0.5
-#define H_DECELERATION 0.25
-#define V_SPEED_LIMIT 5
-#define V_GRAVITY_ACC 0.15
-#define V_JUMP_START_SPEED -4
-#define H_RUN_ACC 0.3
-#define H_RUN_SPEED_LIMIT 6
 
 
-Player::Player(){
+Player::Player(int id, int sprite, int palette, int posx, int posy){
+    spriteId = id;
     positionScreenX = 100;
     positionScreenY = 100;
-    positionX = 180;
-    positionY = 80;
+    positionX = posx;
+    positionY = posy;
     speedX = 0;
     speedY = 0;
     sizeX = 32;
     sizeY = 32;
-    if(gfx.spriteArray[0].getSlotMemory() == -1){
-        gfx.spriteArray[0].loadInMemory();
-    }
-    if(gfx.paletteArray[0].getSlotMemory() == -1){
-        gfx.paletteArray[0].loadInMemory();
-    }
-    NF_CreateSprite(0, 0, gfx.spriteArray[0].getSlotMemory(), gfx.paletteArray[0].getSlotMemory(), positionScreenX, positionScreenY);
+
+    NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
 }
 
 void Player::updateVertical(){
     if(checkRangeMapCollisionX(0, positionX+10, positionY+sizeY, 2) == false){
-        if(speedY < 0 && !(KEY_A & keysHeld())) speedY = 0;
-        accelerationY = V_GRAVITY_ACC;
+        if(speedY < 0 && !(KEY_A & keysHeld())) speedY += 0.5;
+        accelerationY = parameters.vGravityAcc;
         speedY += accelerationY;
-        if(speedY > V_SPEED_LIMIT) speedY = V_SPEED_LIMIT;
+        if(speedY > parameters.vSpeedLimit) speedY = parameters.vSpeedLimit;
     }
     else{
         accelerationY = 0;
         speedY = 0;
         if(KEY_A & keysDown()){
-            speedY = V_JUMP_START_SPEED;
+            speedY = parameters.vJumpStartSpeed;
         }
     }
     if(checkRangeMapCollisionX(0, positionX+10, positionY, 2) == true){
@@ -66,8 +51,8 @@ void Player::updateVertical(){
 }
 
 void Player::updateHorizontal(){
-    if(speedX > H_DECELERATION) speedX -= H_DECELERATION;
-    else if(speedX < -H_DECELERATION) speedX += H_DECELERATION;
+    if(speedX > parameters.hDeceleration) speedX -= parameters.hDeceleration;
+    else if(speedX < -parameters.hDeceleration) speedX += parameters.hDeceleration;
     else speedX = 0;
 
     accelerationX = 0;
@@ -77,24 +62,24 @@ void Player::updateHorizontal(){
     }
     if(!(KEY_L & keysHeld())) run = false;
     if(run == false){
-        if(KEY_RIGHT & keysHeld()) accelerationX += H_ACC;
-        if(KEY_LEFT & keysHeld()) accelerationX -= H_ACC;
+        if(KEY_RIGHT & keysHeld()) accelerationX += parameters.hAcc;
+        if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hAcc;
     }
     else{
-        if(KEY_RIGHT & keysHeld()) accelerationX += H_RUN_ACC;
-        if(KEY_LEFT & keysHeld()) accelerationX -= H_RUN_ACC;
+        if(KEY_RIGHT & keysHeld()) accelerationX += parameters.hRunAcc;
+        if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hRunAcc;
     }
 
     speedX += accelerationX;
     if(run == false){
-        if(speedX > H_SPEED_LIMIT) speedX = H_SPEED_LIMIT;
-        if(speedX < -H_SPEED_LIMIT) speedX = -H_SPEED_LIMIT;
+        if(speedX > parameters.hSpeedLimit) speedX = parameters.hSpeedLimit;
+        if(speedX < -parameters.hSpeedLimit) speedX = -parameters.hSpeedLimit;
     }
     else{
-        if(speedX > H_RUN_SPEED_LIMIT) speedX = H_RUN_SPEED_LIMIT;
-        if(speedX < -H_RUN_SPEED_LIMIT) speedX = -H_RUN_SPEED_LIMIT;
+        if(speedX > parameters.hRunSpeedLimit) speedX = parameters.hRunSpeedLimit;
+        if(speedX < -parameters.hRunSpeedLimit) speedX = -parameters.hRunSpeedLimit;
     }
-    
+
     u8 side_pixel_add = 0;
     if(speedX > 0) side_pixel_add = 14; 
     if(checkRangeMapCollisionY(0, positionX+speedX+side_pixel_add+10, positionY, 4) == false){
@@ -132,13 +117,26 @@ void Player::updateAnimation(){
     int actualFrame = frameAnim;
     if(actualFrame == 3) actualFrame = 1;
 
-    NF_SpriteFrame(0, 0, actualFrame);
+    NF_SpriteFrame(0, spriteId, actualFrame);
 }
 
-void Player::updatePlayer(){
+void Player::update(){
     updateVertical();
     updateHorizontal();
     updateAnimation();
-    moveCamToPos();
-    NF_MoveSprite(0, 0, positionScreenX, positionScreenY);
 }
+
+/*
+PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceleration,
+    float vspeedlimit, float vgravityacc, float vjumpstartspeed, float hrunacc, float hrunspeedlimit)
+{
+    hSpeedLimit = hspeedlimit;
+    hAcc = hacc;
+    hDeceleration = hdeceleration;
+    vSpeedLimit = vspeedlimit;
+    vGravityAcc = vgravityacc;
+    vJumpStartSpeed = vjumpstartspeed;
+    hRunAcc = hrunacc;
+    hRunSpeedLimit = hrunspeedlimit;
+}(2, 0.5, 0.25, 5, 0.15, -4.5, 0.3, 6)
+*/

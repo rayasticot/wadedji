@@ -10,15 +10,13 @@
 #define SIZE_SCREEN_X 256
 #define SIZE_SCREEN_Y 192
 
-
-void Object::moveCamToPos(){
-    bool flagNotCenterX = false;
-    bool flagNotCenterY = false;
-    int camPositionX = 0;
-    int camPositionY = 0;
-    
+void Object::moveScreenPos(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY){
+    /*
     const int positionScreenCenterX = (SIZE_SCREEN_X-sizeX)/2;
     const int positionScreenCenterY = (SIZE_SCREEN_Y-sizeY)/2;
+
+    flagNotCenterX = false;
+    flagNotCenterY = false;
 
     positionScreenX = positionScreenCenterX;
     positionScreenY = positionScreenCenterY;
@@ -31,39 +29,74 @@ void Object::moveCamToPos(){
         positionScreenY = positionY;
         flagNotCenterY = true;
     }
-    if(positionX > 768/**/-136){
-        positionScreenX = positionX-(768/**/-256);
+    if(positionX > screenSizeX-136){
+        positionScreenX = positionX-(screenSizeX-256);
         flagNotCenterX = true;
     }
-    if(positionY > 768/**//**/-112){
-        positionScreenY = positionY-(768/**/-192);
+    if(positionY > screenSizeY-112){
+        positionScreenY = positionY-(screenSizeY-192);
+        flagNotCenterY = true;
+    }
+    */
+    
+    positionScreenX = positionX-camPositionX;
+    positionScreenY = positionY-camPositionY;
+
+    if(positionScreenX < -64){
+        positionScreenX = SIZE_SCREEN_X;
+    }
+
+    if(positionScreenY < -64){
+        positionScreenY = SIZE_SCREEN_Y;
+    }
+}
+
+void Object::moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY){
+    const int positionScreenCenterX = (SIZE_SCREEN_X-sizeX)/2;
+    const int positionScreenCenterY = (SIZE_SCREEN_Y-sizeY)/2;
+
+    flagNotCenterX = false;
+    flagNotCenterY = false;
+
+    if(positionX < positionScreenCenterX){
+        flagNotCenterX = true;
+    }
+
+    if(positionY < positionScreenCenterY){
         flagNotCenterY = true;
     }
 
-    if(flagNotCenterX == false){
-        camPositionX = positionX-positionScreenCenterX;
+    if(positionX > screenSizeX-136){
+        flagNotCenterX = true;
+    }
+
+    if(positionY > screenSizeY-112){
+        flagNotCenterY = true;
+    }
+ 
+    if(!flagNotCenterX){
+        *camPositionX = positionX-positionScreenCenterX;
     }
     else{
         if(positionX < positionScreenCenterX){
-            camPositionX = 0;
+            *camPositionX = 0;
         }
-        if(positionX > 768/**/-136){
-            camPositionX = 768/**/-256;
+        if(positionX > screenSizeX-136){
+            *camPositionX = screenSizeX-256;
         }
     }
 
-    if(flagNotCenterY == false){
-        camPositionY = positionY-positionScreenCenterY;
+    if(!flagNotCenterY){
+        *camPositionY = positionY-positionScreenCenterY;
     }
     else{
         if(positionY < positionScreenCenterY){
-            camPositionY = 0;
+            *camPositionY = 0;
         }
-        if(positionY > 768/**//**/-112){
-            camPositionY = 768/**//**/-192;
+        if(positionY > screenSizeY-112){
+            *camPositionY = screenSizeY-192;
         }
     }
-    NF_ScrollBg(0, 0, camPositionX, camPositionY);
 }
 
 bool Object::checkRangeMapCollisionX(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange){
@@ -80,4 +113,9 @@ bool Object::checkRangeMapCollisionY(u8 collisionMapSlot, u16 startX, u16 startY
         if(NF_GetTile(collisionMapSlot, startX, startY+(2*i)) == 1) return true;
     }
     return false;
+}
+
+void Object::updateSprite(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY){
+    moveScreenPos(camPositionX, camPositionY, screenSizeX, screenSizeY);
+    NF_MoveSprite(0, spriteId, positionScreenX, positionScreenY);
 }
