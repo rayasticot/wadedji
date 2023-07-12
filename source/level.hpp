@@ -6,7 +6,8 @@ class Level{
         uint id;
         LevelBackground bg;
         std::unique_ptr<GfxGroup> gfx;
-        std::vector<std::unique_ptr<Object>> objectVector;
+        Player* player;
+        std::vector<std::unique_ptr<Ennemy>> ennemyVector;
 
         void readLevelFile(std::string fileName);
         void update();

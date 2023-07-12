@@ -10,6 +10,10 @@
 #include "gfx.hpp"
 #include "background.hpp"
 #include "object.hpp"
+#include "player.hpp"
+#include "wadedji.hpp"
+#include "ennemy.hpp"
+#include "pig.hpp"
 #include "level.hpp"
 
 void Level::readLevelFile(std::string fileName){

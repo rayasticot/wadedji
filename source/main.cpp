@@ -1,4 +1,6 @@
 #include <iostream>
+#include <memory>
+#include <functional>
 #include <vector>
 #include <nds.h>
 #include <nf_lib.h>
@@ -8,7 +10,10 @@
 
 #include "object.hpp"
 #include "player.hpp"
+#include "wadedji.hpp"
 #include "caca.hpp"
+#include "ennemy.hpp"
+#include "pig.hpp"
 #include "gfx.hpp"
 #include "background.hpp"
 
@@ -40,8 +45,12 @@ int main(int argc, char **argv){
 	testGfx.loadSpr(128);
 	testGfx.loadPal(16);
 
-    Player wadedji(0, 0, 0, 180, 100);
-	Caca caca(1, 1, 1, 100, 100);
+	std::vector<std::function<void()>> update;
+	std::vector<std::function<void(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY)>> updateSprite;
+	
+	std::vector<std::unique_ptr<Object>> objectVector;
+	objectVector.emplace_back(new Wadedji(0, 0, 0, 180, 100));
+	objectVector.emplace_back(new Pig(1, 1, 1, 384, 192));
 
 	int camX = 0;
 	int camY = 0;
@@ -50,12 +59,14 @@ int main(int argc, char **argv){
 
     while(1){
 		scanKeys();
-		wadedji.update();
-		caca.update();
-		wadedji.moveCamToPos(&camX, &camY, testBg.getMapSizeX(), testBg.getMapSizeY());
+		for(auto& i : objectVector){
+            i->update();
+        }
+		objectVector.at(0)->moveCamToPos(&camX, &camY, testBg.getMapSizeX(), testBg.getMapSizeY());
 		testBg.scrollBg(4, oldcamX, oldcamY);
-		wadedji.updateSprite(oldcamX, oldcamY, testBg.getMapSizeX(), testBg.getMapSizeY());
-		caca.updateSprite(oldcamX, oldcamY, testBg.getMapSizeX(), testBg.getMapSizeY());
+		for(auto& i : objectVector){
+            i->updateSprite(oldcamX, oldcamY, testBg.getMapSizeX(), testBg.getMapSizeY());
+        }
 		oldcamX = camX;
 		oldcamY = camY;
 		NF_SpriteOamSet(0);

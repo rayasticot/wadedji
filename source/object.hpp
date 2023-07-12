@@ -10,6 +10,8 @@ class Object{
         int positionScreenY;
         int sizeX;
         int sizeY;
+        int shakeX = 0;
+        int shakeY = 0;
         bool flagNotCenterX;
         bool flagNotCenterY;
 
@@ -18,7 +20,7 @@ class Object{
         bool checkRangeMapCollisionY(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange);
     public:
         void moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY);
-        void update();
+        virtual void update() = 0;
         void updateSprite(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY);
 };
 

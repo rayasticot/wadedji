@@ -3,16 +3,15 @@
 
 class PlayerParameters{
     public:
-        float hSpeedLimit = 2;
-        float hAcc = 0.5;
-        float hDeceleration = 0.25;
-        float vSpeedLimit = 5;
-        float vGravityAcc = 0.15;
-        float vJumpStartSpeed = -4.5;
-        float hRunAcc = 0.3;
-        float hRunSpeedLimit = 6;
+        float hSpeedLimit;
+        float hAcc;
+        float hDeceleration;
+        float vSpeedLimit;
+        float vGravityAcc;
+        float vJumpStartSpeed;
+        float hRunAcc;
+        float hRunSpeedLimit;
 
-        /*
         PlayerParameters(
             float hspeedlimit,
             float hacc,
@@ -23,26 +22,18 @@ class PlayerParameters{
             float hrunacc,
             float hrunspeedlimit
         );
-        */
 };
 
 class Player : public Object{
-    private:
-        PlayerParameters parameters;
+    protected:
         float accelerationX;
         float accelerationY;
         float speedX;
         float speedY;
-        int frameAnim;
-        int frameTime;
         bool run = false;
-
-        void updateVertical();
-        void updateHorizontal();
-        void updateAnimation();
     
     public:
-        Player(int id, int sprite, int palette, int posx, int posy);
-        void update();
+        //Player(int id, int sprite, int palette, int posx, int posy);
+        virtual void update() = 0;
 };
 #endif

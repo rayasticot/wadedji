@@ -75,7 +75,7 @@ void Object::moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX,
     }
  
     if(!flagNotCenterX){
-        *camPositionX = positionX-positionScreenCenterX;
+        *camPositionX = positionX-positionScreenCenterX+shakeX;
     }
     else{
         if(positionX < positionScreenCenterX){
@@ -87,7 +87,7 @@ void Object::moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX,
     }
 
     if(!flagNotCenterY){
-        *camPositionY = positionY-positionScreenCenterY;
+        *camPositionY = positionY-positionScreenCenterY+shakeY;
     }
     else{
         if(positionY < positionScreenCenterY){
@@ -97,6 +97,11 @@ void Object::moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX,
             *camPositionY = screenSizeY-192;
         }
     }
+
+    if(shakeX > 0){ shakeX--; }
+    if(shakeX < 0){ shakeX++; }
+    if(shakeY > 0){ shakeY--; }
+    if(shakeY < 0){ shakeY++; }
 }
 
 bool Object::checkRangeMapCollisionX(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange){
