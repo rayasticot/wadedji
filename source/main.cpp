@@ -11,11 +11,15 @@
 #include "object.hpp"
 #include "player.hpp"
 #include "wadedji.hpp"
+/*
 #include "caca.hpp"
 #include "ennemy.hpp"
 #include "pig.hpp"
+*/
 #include "gfx.hpp"
 #include "background.hpp"
+#include "level.hpp"
+#include "game.hpp"
 
 void crashGame(std::string message){
 	consoleDemoInit();
@@ -37,19 +41,37 @@ int main(int argc, char **argv){
 	mmInitDefault(std::string("nitro:/soundbank.bin").data());
 	NF_InitCmapBuffers();
 
-    LevelBackground testBg("bgfile.bgjim");
+	Game game(0);
+
+	/*
+	GfxGroup testGfx;
+	testGfx.readGfxFile("grotte.gfxjim", 0, 0, 0);
+	testGfx.loadSpr(128);
+	testGfx.loadPal(16);
+
+	Wadedji wade(0, 0, 0, 0, 0);
+
+	Level level(&testGfx, &wade, "level0/lvl.lvljim");
+	
+	while(1){
+		level.update();
+	}
+	*/
+
+	/*
+    LevelBackground testBg("level3/bg.bgjim");
 	testBg.loadCol();
 	testBg.loadBg(4);
 	testBg.createBg(4);
-	GfxGroup testGfx("gfxfile.gfxjim", 0, 0, 0);
+	GfxGroup testGfx("grotte.gfxjim", 0, 0, 0);
 	testGfx.loadSpr(128);
 	testGfx.loadPal(16);
 
 	std::vector<std::function<void()>> update;
 	std::vector<std::function<void(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY)>> updateSprite;
-	
+
 	std::vector<std::unique_ptr<Object>> objectVector;
-	objectVector.emplace_back(new Wadedji(0, 0, 0, 180, 100));
+	objectVector.emplace_back(new Wadedji(0, 0, 0, 120, 0));
 	objectVector.emplace_back(new Pig(1, 1, 1, 384, 192));
 
 	int camX = 0;
@@ -77,6 +99,7 @@ int main(int argc, char **argv){
 		oamUpdate(&oamMain);
 		oamUpdate(&oamSub);
 	}
+	*/
 
 	return 0;
 }

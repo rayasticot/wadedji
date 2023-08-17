@@ -12,7 +12,9 @@ class Wadedji : public Player{
         void updateAnimation();
     public:
         Wadedji(int id, int sprite, int palette, int posx, int posy);
-        void update();
+        void createSprite();
+        void deleteSprite();
+        int update();
 };
 
 #endif

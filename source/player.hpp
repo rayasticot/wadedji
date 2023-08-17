@@ -1,6 +1,20 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+/*
+health
+mana
+FCFA
+----
+max health
+max mana
+phys attack
+genie attack
+speed
+jump
+scam
+*/
+
 class PlayerParameters{
     public:
         float hSpeedLimit;
@@ -31,9 +45,13 @@ class Player : public Object{
         float speedX;
         float speedY;
         bool run = false;
+        //virtual void attack() = 0;
     
     public:
         //Player(int id, int sprite, int palette, int posx, int posy);
-        virtual void update() = 0;
+        void updateLevel(int x, int y);
+        virtual void createSprite();
+        virtual void deleteSprite();
+        virtual int update() = 0;
 };
 #endif

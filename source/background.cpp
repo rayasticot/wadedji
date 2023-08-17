@@ -50,15 +50,21 @@ void Background::deleteBg(){
 }
 
 void Background::scrollBg(int positionX, int positionY){
-    NF_ScrollBg(0, bgLayer, positionX, positionY);
+    int newPositionX = positionX;
+    int newPositionY = positionY;
+    if(bgLayer > 0){
+        newPositionX = (int)positionX*scrollSpeed;
+        newPositionY = (int)positionY*scrollSpeed;
+    }
+    NF_ScrollBg(0, bgLayer, newPositionX, newPositionY);
 }
 
 Background::~Background(){
-    if(!created) deleteBg();
-    if(!loaded) unLoadBg();
+    if(created) deleteBg();
+    if(loaded) unLoadBg();
 }
 
-LevelBackground::LevelBackground(std::string bgFilename){
+void LevelBackground::readBackgroundFile(std::string bgFilename){
     std::ifstream bgFile(bgFilename);
     std::string readText;
     std::getline(bgFile, readText);
@@ -155,4 +161,8 @@ void LevelBackground::loadCol(){
 void LevelBackground::unLoadCol(){
     NF_UnloadColisionMap(0);
     colMapActive = false;
+}
+
+LevelBackground::~LevelBackground(){
+    if(colMapActive) unLoadCol();
 }

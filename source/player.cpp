@@ -21,3 +21,8 @@ PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceler
     hRunAcc = hrunacc;
     hRunSpeedLimit = hrunspeedlimit;
 }
+
+void Player::updateLevel(int x, int y){
+    positionX = x;
+    positionY = y;
+}

@@ -10,8 +10,10 @@
 #include "wadedji.hpp"
 
 
-Wadedji::Wadedji(int id, int sprite, int palette, int posx, int posy){
+Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy){
     spriteId = id;
+    sprite = sprite_;
+    palette = palette_;
     positionScreenX = 100;
     positionScreenY = 100;
     positionX = posx;
@@ -20,8 +22,14 @@ Wadedji::Wadedji(int id, int sprite, int palette, int posx, int posy){
     speedY = 0;
     sizeX = 32;
     sizeY = 32;
+}
 
+void Wadedji::createSprite(){
     NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
+}
+
+void Wadedji::deleteSprite(){
+    NF_DeleteSprite(0, spriteId);
 }
 
 void Wadedji::updateVertical(){
@@ -121,8 +129,12 @@ void Wadedji::updateAnimation(){
     NF_SpriteFrame(0, spriteId, actualFrame);
 }
 
-void Wadedji::update(){
+int Wadedji::update(){
     updateVertical();
     updateHorizontal();
     updateAnimation();
+
+    if(NF_GetTile(0, positionX+16, positionY) == 2 && KEY_UP & keysDown()) return 1;
+
+    return 0;
 }

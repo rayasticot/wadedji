@@ -5,14 +5,20 @@ class Level{
     private:
         uint id;
         LevelBackground bg;
-        std::unique_ptr<GfxGroup> gfx;
+        GfxGroup* gfx;
         Player* player;
-        std::vector<std::unique_ptr<Ennemy>> ennemyVector;
+        //std::vector<std::unique_ptr<Ennemy>> ennemyVector;
 
+        int camX = 0;
+	    int camY = 0;
+	    int oldcamX = 0;
+	    int oldcamY = 0;
+
+        void setUpBg();
         void readLevelFile(std::string fileName);
-        void update();
     public:
-        Level(std::unique_ptr<GfxGroup> gfxGroup, std::string fileName);
+        Level(GfxGroup* gfxGroup, Player* play, std::string fileName);
+        int update();
 };
 
 #endif

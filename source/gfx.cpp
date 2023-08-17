@@ -35,6 +35,10 @@ void Sprite::unloadSpr(){
     }
 }
 
+/*Sprite::~Sprite(){
+    unloadSpr();
+}*/
+
 Palette::Palette(std::string fileName, u8 screen, u8 slot){
     namePalette = fileName;
     screenNumber = screen;
@@ -56,6 +60,42 @@ void Palette::unloadPal(){
     }
 }
 
+/*Palette::~Palette(){
+    unloadPal();
+}*/
+
+void GfxGroup::readGfxFile(std::string fileName, u8 screen, int sprStart, int palStart){
+    std::ifstream gfxFile(fileName);
+    std::string readText;
+    std::getline(gfxFile, readText);
+    if(readText != "_GFX"){
+        NF_Error(240, "d", 3);
+    }
+    std::getline(gfxFile, readText);
+    std::getline(gfxFile, readText);
+    if(readText != "_SPR"){
+        NF_Error(241, "d", 3);
+    }
+    int sprIndex = sprStart;
+    while(readText != "_PAL"){
+        std::getline(gfxFile, readText);
+        std::string tempSprName = readText;
+        std::getline(gfxFile, readText);
+        int tempSizeX = std::stoi(readText);
+        std::getline(gfxFile, readText);
+        int tempSizeY = std::stoi(readText);
+        spriteVector.push_back(Sprite(tempSprName, (u8)tempSizeX, (u8)tempSizeY, screen, sprIndex));
+        sprIndex++;
+        std::getline(gfxFile, readText);
+    }
+    int palIndex = palStart;
+    while(std::getline(gfxFile, readText)){
+        paletteVector.push_back(Palette(readText, screen, palIndex));
+        palIndex++;
+    }
+    gfxFile.close();
+}
+/*
 GfxGroup::GfxGroup(std::string fileName, u8 screen, int sprStart, int palStart){
     std::ifstream gfxFile(fileName);
     std::string readText;
@@ -87,7 +127,7 @@ GfxGroup::GfxGroup(std::string fileName, u8 screen, int sprStart, int palStart){
     }
     gfxFile.close();
 }
-
+*/
 void GfxGroup::loadSpr(uint id){
     if(id >= 128){
         for(auto i : spriteVector){

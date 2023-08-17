@@ -20,6 +20,6 @@ Caca::Caca(int id, int sprite, int palette, int posx, int posy){
     NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
 }
 
-void Caca::update(){
-
+int Caca::update(){
+    return 0;
 }

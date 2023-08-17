@@ -31,7 +31,8 @@ class LevelBackground{
         int colMapSizeY;
         bool colMapActive;
     public:
-        LevelBackground(std::string bgFile);
+        //LevelBackground();
+        void readBackgroundFile(std::string bgFile);
         void loadBg(uint id);
         void unLoadBg(uint id);
         void createBg(uint id);
@@ -41,6 +42,7 @@ class LevelBackground{
         void unLoadCol();
         int getMapSizeX(){return colMapSizeX;};
         int getMapSizeY(){return colMapSizeY;};
+        ~LevelBackground();
 };
 
 #endif

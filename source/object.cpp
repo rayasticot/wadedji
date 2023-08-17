@@ -51,9 +51,9 @@ void Object::moveScreenPos(int camPositionX, int camPositionY, int screenSizeX, 
     }
 }
 
-void Object::moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY){
-    const int positionScreenCenterX = (SIZE_SCREEN_X-sizeX)/2;
-    const int positionScreenCenterY = (SIZE_SCREEN_Y-sizeY)/2;
+void Object::moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY, int sizeXModif, int sizeYModif){
+    const int positionScreenCenterX = (SIZE_SCREEN_X-(sizeX+sizeXModif))/2;
+    const int positionScreenCenterY = (SIZE_SCREEN_Y-(sizeY+sizeYModif))/2;
 
     flagNotCenterX = false;
     flagNotCenterY = false;

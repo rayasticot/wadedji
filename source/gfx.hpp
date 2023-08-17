@@ -13,6 +13,7 @@ class Sprite{
         Sprite(std::string fileName, u8 xSize, u8 ySize, u8 screen, u8 slot);
         void loadSpr();
         void unloadSpr();
+        //~Sprite();
 
         //std::string getNameSprite(){return nameSprite;}
         u8 getSizeX(){return sizeX;}
@@ -30,6 +31,7 @@ class Palette{
         Palette(std::string fileName, u8 screen, u8 slot);
         void loadPal();
         void unloadPal();
+        //~Palette();
 
         //std::string getNamePalette(){return namePalette;}
         s8 getSlotMemory(){return slotMemory;}
@@ -40,7 +42,8 @@ class GfxGroup{
         std::vector<Sprite> spriteVector;
         std::vector<Palette> paletteVector;
     public:
-        GfxGroup(std::string fileName, u8 screen, int sprStart, int palStart);
+        //GfxGroup(std::string fileName, u8 screen, int sprStart, int palStart);
+        void readGfxFile(std::string fileName, u8 screen, int sprStart, int palStart);
         void loadSpr(uint id);
         void unloadSpr(uint id);
         void loadPal(uint id);

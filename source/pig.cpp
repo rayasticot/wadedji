@@ -27,7 +27,7 @@ Pig::Pig(int id, int sprite, int palette, int posx, int posy){
     NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
 }
 
-void Pig::update(){
+int Pig::update(){
     if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 4)){
         dirRight = false;
         speedX = 0;
@@ -42,4 +42,6 @@ void Pig::update(){
     if(speedX > H_SPEED_LIMIT) speedX = H_SPEED_LIMIT;
     if(speedX < -H_SPEED_LIMIT) speedX = -H_SPEED_LIMIT;
     positionX += speedX;
+
+    return 0;
 }

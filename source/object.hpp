@@ -4,6 +4,8 @@
 class Object{
     protected:
         int spriteId;
+        int sprite;
+        int palette;
         float positionX;
         float positionY;
         int positionScreenX;
@@ -19,8 +21,8 @@ class Object{
         bool checkRangeMapCollisionX(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange);
         bool checkRangeMapCollisionY(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange);
     public:
-        void moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY);
-        virtual void update() = 0;
+        void moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY, int sizeXModif, int sizeYModif);
+        virtual int update() = 0;
         void updateSprite(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY);
 };
 

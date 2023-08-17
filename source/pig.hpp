@@ -10,7 +10,7 @@ class Pig : public Ennemy{
         bool dirRight = false;
     public:
         Pig(int id, int sprite, int palette, int posx, int posy);
-        void update();
+        int update();
 };
 
 #endif
