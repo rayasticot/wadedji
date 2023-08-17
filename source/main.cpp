@@ -28,6 +28,14 @@ void crashGame(std::string message){
 	while(1){}
 }
 
+int getMod(uint musicId){
+	const int sizeMusArray = 2;
+	const int music[sizeMusArray] = {MOD_PLANETEZER2, 0};
+	if(musicId >= sizeMusArray) NF_Error(270, "asd", 4);
+
+	return music[musicId];
+}
+
 int main(int argc, char **argv){
     NF_Set2D(0, 0);
 	NF_Set2D(1, 0);

@@ -35,6 +35,7 @@ void Level::readLevelFile(std::string fileName){
     bg.readBackgroundFile(readText);
     setUpBg();
     std::getline(lvlFile, readText);
+    std::getline(lvlFile, readText);
     if(readText != "_PLY"){
         NF_Error(230, "d", 3);
     }

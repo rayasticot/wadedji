@@ -20,7 +20,7 @@
 
 void fadeOut();
 void fadeIn();
-
+int getMod(uint musicId);
 
 std::string Game::findLevel(std::string fileName, int levelId){
     std::ifstream lvllFile(fileName);
@@ -50,6 +50,20 @@ std::string Game::getGfx(std::string fileName){
     return readText;
 }
 
+uint Game::getMusic(std::string fileName){
+    std::ifstream lvlFile(fileName);
+    std::string readText;
+    std::getline(lvlFile, readText);
+    if(readText != "_LVL"){
+        NF_Error(251, "d", 3);
+    }
+    std::getline(lvlFile, readText);
+    std::getline(lvlFile, readText);
+    std::getline(lvlFile, readText);
+
+    return stoi(readText);
+}
+
 Game::Game(int levelId){
     currentLevel = levelId;
     player = new Wadedji(0, 0, 0, 229, 60);
@@ -68,6 +82,16 @@ Game::Game(int levelId){
         }
         //player = std::make_unique<Player>(Wadedji(0, 0, 0, 0, 0));
         Level level(&gfx, player, currentLevelName);
+        music = getMusic(currentLevelName);
+        if(music != oldMusic){
+            if(oldMusic != 22960){
+                mmStop();
+                mmUnload(getMod(oldMusic));
+            }
+            mmLoad(getMod(music));
+            mmStart(getMod(music), MM_PLAY_LOOP);
+            oldMusic = music;
+        }
         fadeIn();
         while(level.update() == 0);
         fadeOut();
