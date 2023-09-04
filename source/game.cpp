@@ -13,6 +13,8 @@
 #include "object.hpp"
 #include "player.hpp"
 #include "wadedji.hpp"
+#include "ennemy.hpp"
+#include "pig.hpp"
 #include "level.hpp"
 #include "game.hpp"
 
@@ -67,6 +69,7 @@ uint Game::getMusic(std::string fileName){
 Game::Game(int levelId){
     currentLevel = levelId;
     player = new Wadedji(0, 0, 0, 229, 60);
+    mmLoadEffect(SFX_HURT);
     while(1){
         std::string currentLevelName = findLevel(F_LEVEL_LIST, currentLevel);
         std::string gfxName = getGfx(currentLevelName);

@@ -14,7 +14,7 @@ class Wadedji : public Player{
         Wadedji(int id, int sprite, int palette, int posx, int posy);
         void createSprite();
         void deleteSprite();
-        int update();
+        void update();
 };
 
 #endif

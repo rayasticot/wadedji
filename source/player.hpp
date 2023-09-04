@@ -45,13 +45,22 @@ class Player : public Object{
         float speedX;
         float speedY;
         bool run = false;
+        int attackTime = 0;
+        int exit = 0;
+        int side = 0;
+        int health;
+        int meleeDamage = 10;
         //virtual void attack() = 0;
     
     public:
         //Player(int id, int sprite, int palette, int posx, int posy);
+        int getAttack(){ return attackTime; };
+        int getSide(){ return side; };
+        int getExit(){ return exit; };
+        int getMeleeDamage(){ return meleeDamage; };
         void updateLevel(int x, int y);
         virtual void createSprite();
         virtual void deleteSprite();
-        virtual int update() = 0;
+        virtual void update() = 0;
 };
 #endif

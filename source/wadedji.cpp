@@ -34,7 +34,7 @@ void Wadedji::deleteSprite(){
 
 void Wadedji::updateVertical(){
     if(checkRangeMapCollisionX(0, positionX+10, positionY+sizeY, 2) == false){
-        if(speedY < 0 && !(KEY_A & keysHeld())) speedY += 0.5;
+        if(speedY < 0 && !(KEY_B & keysHeld())) speedY += 0.5;
         accelerationY = parameters.vGravityAcc;
         speedY += accelerationY;
         if(speedY > parameters.vSpeedLimit) speedY = parameters.vSpeedLimit;
@@ -42,7 +42,7 @@ void Wadedji::updateVertical(){
     else{
         accelerationY = 0;
         speedY = 0;
-        if(KEY_A & keysDown()){
+        if(KEY_B & keysDown()){
             speedY = parameters.vJumpStartSpeed;
         }
     }
@@ -64,22 +64,33 @@ void Wadedji::updateHorizontal(){
     else if(speedX < -parameters.hDeceleration) speedX += parameters.hDeceleration;
     else speedX = 0;
 
-    accelerationX = 0;
-    if(KEY_L & keysDown() && accelerationY == 0){
-        speedX = 0;
-        run = true;
+    if(attackTime == 0){
+        accelerationX = 0;
+        if(KEY_L & keysDown() && accelerationY == 0){
+            speedX = 0;
+            run = true;
+        }
+        if(!(KEY_L & keysHeld())) run = false;
+        if(run == false){
+            if(KEY_RIGHT & keysHeld()) accelerationX += parameters.hAcc;
+            if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hAcc;
+        }
+        else{
+            if(KEY_RIGHT & keysHeld()) accelerationX += parameters.hRunAcc;
+            if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hRunAcc;
+        }
+
+        if(KEY_Y & keysDown() && !attackTime){
+            attackTime = 30;
+        }
     }
-    if(!(KEY_L & keysHeld())) run = false;
-    if(run == false){
-        if(KEY_RIGHT & keysHeld()) accelerationX += parameters.hAcc;
-        if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hAcc;
-    }
-    else{
-        if(KEY_RIGHT & keysHeld()) accelerationX += parameters.hRunAcc;
-        if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hRunAcc;
+
+    if(attackTime != 0){
+        attackTime--;
     }
 
     speedX += accelerationX;
+
     if(run == false){
         if(speedX > parameters.hSpeedLimit) speedX = parameters.hSpeedLimit;
         if(speedX < -parameters.hSpeedLimit) speedX = -parameters.hSpeedLimit;
@@ -100,41 +111,49 @@ void Wadedji::updateHorizontal(){
 }
 
 void Wadedji::updateAnimation(){
-    if(speedY != 0){
-        frameAnim = 0;
+    if(attackTime > 0){
+        frameAnim = 4;
+    }
+    else if(speedY != 0){
+        frameAnim = 2;
     }
     else if(speedX != 0){
         frameTime++;
-        frameTime = frameTime%8;
-        if(frameTime == 7){
+        frameTime = frameTime%6;
+        if(frameTime == 5){
             frameAnim++;
             frameAnim = frameAnim%4;
         }
     }
     else{
-        frameAnim = 1;
+        frameAnim = 0;
         frameTime = 0;
     }
 
     if(speedX > 0){
         NF_HflipSprite(0, 0, false);
+        side = 0;
     }
     else if(speedX < 0){
         NF_HflipSprite(0, 0, true);
+        side = 1;
     }
 
     int actualFrame = frameAnim;
     if(actualFrame == 3) actualFrame = 1;
+    if(actualFrame == 4) actualFrame = 3;
 
     NF_SpriteFrame(0, spriteId, actualFrame);
 }
 
-int Wadedji::update(){
+void Wadedji::update(){
     updateVertical();
     updateHorizontal();
     updateAnimation();
-
-    if(NF_GetTile(0, positionX+16, positionY) == 2 && KEY_UP & keysDown()) return 1;
-
-    return 0;
+    if(NF_GetTile(0, positionX+16, positionY) == 2 && KEY_UP & keysDown()){
+        exit = 1;
+    }
+    else{
+        exit = 0;
+    }
 }

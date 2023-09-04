@@ -11,11 +11,8 @@
 #include "object.hpp"
 #include "player.hpp"
 #include "wadedji.hpp"
-/*
-#include "caca.hpp"
 #include "ennemy.hpp"
 #include "pig.hpp"
-*/
 #include "gfx.hpp"
 #include "background.hpp"
 #include "level.hpp"
@@ -48,8 +45,9 @@ int main(int argc, char **argv){
 	NF_InitTiledBgSys(1);
 	mmInitDefault(std::string("nitro:/soundbank.bin").data());
 	NF_InitCmapBuffers();
+	setBrightness(3, -16);
 
-	Game game(0);
+	Game game(1);
 
 	/*
 	GfxGroup testGfx;

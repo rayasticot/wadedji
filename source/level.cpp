@@ -17,6 +17,19 @@
 #include "pig.hpp"
 #include "level.hpp"
 
+#define ENN_PIG 0
+
+#define PIG_SPR 1
+
+
+void Level::addEnnemy(int type, int positionX, int positionY, int id){
+    switch(type){
+        case 0:
+            ennemyVector.emplace_back(new Pig(id, PIG_SPR, 1, positionX, positionY));
+            break;
+    }
+}
+
 void Level::setUpBg(){
     bg.loadCol();
 	bg.loadBg(4);
@@ -45,8 +58,25 @@ void Level::readLevelFile(std::string fileName){
     int playerY = stoi(readText);
     player->updateLevel(playerX, playerY);
     std::getline(lvlFile, readText);
-    if(readText != "_OBJ"){
+    if(readText != "_ENN"){
         NF_Error(231, "d", 3);
+    }
+    
+    int sprId = 1;
+    std::getline(lvlFile, readText);
+    while(readText != "\\"){
+        int ennemyType = stoi(readText);
+        std::getline(lvlFile, readText);
+        int ennemyX = stoi(readText);
+        std::getline(lvlFile, readText);
+        int ennemyY = stoi(readText);
+        addEnnemy(ennemyType, ennemyX, ennemyY, sprId);
+        sprId++;
+        std::getline(lvlFile, readText);
+        if(readText != ":"){
+            break;
+        }
+        std::getline(lvlFile, readText);
     }
     lvlFile.close();
     update();
@@ -54,11 +84,43 @@ void Level::readLevelFile(std::string fileName){
 }
 
 int Level::update(){
+    while(sleep > 0){
+        swiWaitForVBlank();
+        sleep--;
+    }
     scanKeys();
-    int playerReturn = player->update();
+    player->update();
+    int playerReturn = player->getExit();
+    for(auto& i : ennemyVector){
+        i->update();
+    }
     player->moveCamToPos(&camX, &camY, bg.getMapSizeX(), bg.getMapSizeY(), -16, 0);
 	bg.scrollBg(4, oldcamX, oldcamY);
     player->updateSprite(oldcamX, oldcamY, bg.getMapSizeX(), bg.getMapSizeY());
+    for(auto& i : ennemyVector){
+        i->updateSprite(camX, camY, bg.getMapSizeX(), bg.getMapSizeY());
+    }
+    float direction = 1.0;
+    if(player->getSide()){
+        direction = -1.0;
+    }
+    for(auto& i : ennemyVector){
+        switch(i->checkHit(player)){
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                if(i->getHurtTime() <= 0){
+                    i->hurt(player->getMeleeDamage(), direction);
+                    mmEffect(SFX_HURT);
+                    if(i->getHealth() > 0){
+                        sleep = 5;
+                    }
+                }
+                break;
+        }
+    }
     oldcamX = camX;
 	oldcamY = camY;
 
@@ -69,7 +131,7 @@ int Level::update(){
 
 	oamUpdate(&oamMain);
 	oamUpdate(&oamSub);
-    
+
     return playerReturn;
 }
 

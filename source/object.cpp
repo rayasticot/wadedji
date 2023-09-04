@@ -120,7 +120,19 @@ bool Object::checkRangeMapCollisionY(u8 collisionMapSlot, u16 startX, u16 startY
     return false;
 }
 
+bool Object::checkCollision(int posX, int posY, int otherSizeX, int otherSizeY){
+    if((int)positionX+sizeX >= posX && (int)positionX < posX+otherSizeX){
+        if((int)positionY+sizeY >= posY && (int)positionY < posY+otherSizeY){
+            return true;
+        }
+    }
+    return false;
+}
+
 void Object::updateSprite(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY){
     moveScreenPos(camPositionX, camPositionY, screenSizeX, screenSizeY);
     NF_MoveSprite(0, spriteId, positionScreenX, positionScreenY);
+    if(blink){
+        NF_MoveSprite(0, spriteId, 256, 192);
+    }
 }
