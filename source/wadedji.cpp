@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -6,6 +7,7 @@
 #include "soundbank_bin.h"
 
 #include "object.hpp"
+#include "interface.hpp"
 #include "player.hpp"
 #include "wadedji.hpp"
 
@@ -22,6 +24,8 @@ Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy){
     speedY = 0;
     sizeX = 32;
     sizeY = 32;
+
+    inter.start();
 }
 
 void Wadedji::createSprite(){
@@ -44,6 +48,9 @@ void Wadedji::updateVertical(){
         speedY = 0;
         if(KEY_B & keysDown()){
             speedY = parameters.vJumpStartSpeed;
+            mm_sfxhand jumpSound = mmEffect(SFX_OUI);
+            int rate = 1024 * std::pow(2, ((rand()%9)-4)/24.0);
+            mmEffectRate(jumpSound, rate);
         }
     }
     if(checkRangeMapCollisionX(0, positionX+10, positionY, 2) == true){
@@ -64,8 +71,9 @@ void Wadedji::updateHorizontal(){
     else if(speedX < -parameters.hDeceleration) speedX += parameters.hDeceleration;
     else speedX = 0;
 
+    accelerationX = 0;
+
     if(attackTime == 0){
-        accelerationX = 0;
         if(KEY_L & keysDown() && accelerationY == 0){
             speedX = 0;
             run = true;
@@ -80,8 +88,17 @@ void Wadedji::updateHorizontal(){
             if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hRunAcc;
         }
 
-        if(KEY_Y & keysDown() && !attackTime){
-            attackTime = 30;
+        if(KEY_Y & keysDown() && !attackTime){ 
+            attackTime = 20;
+            if(!side){
+                speedX = 4;
+            }
+            else{
+                speedX = -4;
+            }
+            mm_sfxhand punchSound = mmEffect(SFX_ENVOYER);
+            int rate = 1024 * std::pow(2, ((rand()%9)-4)/24.0);
+            mmEffectRate(punchSound, rate);
         }
     }
 
@@ -91,7 +108,7 @@ void Wadedji::updateHorizontal(){
 
     speedX += accelerationX;
 
-    if(run == false){
+    if(run == false && attackTime == 0){
         if(speedX > parameters.hSpeedLimit) speedX = parameters.hSpeedLimit;
         if(speedX < -parameters.hSpeedLimit) speedX = -parameters.hSpeedLimit;
     }
@@ -147,9 +164,20 @@ void Wadedji::updateAnimation(){
 }
 
 void Wadedji::update(){
+    if(hurtTime > 0){
+        hurtTime--;
+        blink = !blink;
+    }
+    else{
+        blink = false;
+    }
+    if(health <= 0){
+        blink = false;
+    }
     updateVertical();
     updateHorizontal();
     updateAnimation();
+    inter.update(health);
     if(NF_GetTile(0, positionX+16, positionY) == 2 && KEY_UP & keysDown()){
         exit = 1;
     }

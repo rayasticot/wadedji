@@ -6,6 +6,7 @@
 #include "soundbank_bin.h"
 
 #include "object.hpp"
+#include "interface.hpp"
 #include "player.hpp"
 
 
@@ -25,4 +26,13 @@ PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceler
 void Player::updateLevel(int x, int y){
     positionX = x;
     positionY = y;
+}
+
+void Player::hurt(int damage, float direction){
+    health -= damage;
+    if(health < 0){
+        health = 0;
+    }
+    speedX = direction*(damage*2);
+    hurtTime = 60;
 }

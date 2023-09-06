@@ -9,6 +9,7 @@
 #include "soundbank_bin.h"
 
 #include "object.hpp"
+#include "interface.hpp"
 #include "player.hpp"
 #include "wadedji.hpp"
 #include "ennemy.hpp"
@@ -47,7 +48,7 @@ int main(int argc, char **argv){
 	NF_InitCmapBuffers();
 	setBrightness(3, -16);
 
-	Game game(1);
+	Game game(0);
 
 	/*
 	GfxGroup testGfx;

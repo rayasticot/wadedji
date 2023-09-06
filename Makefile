@@ -24,7 +24,7 @@ LIBNDS	:=	$(DEVKITPRO)/libnds
 
 GAME_TITLE	    :=	projet wade
 GAME_SUBTITLE1	:= 2
-GAME_SUBTITLE2	:= 5
+GAME_SUBTITLE2	:= 7
 GAME_ICON		:=	$(CURDIR)/../icon.bmp
 
 _ADDFILES	:=	-d $(NITRO_FILES)

@@ -6,6 +6,7 @@
 #include "soundbank_bin.h"
 
 #include "object.hpp"
+#include "interface.hpp"
 #include "player.hpp"
 #include "ennemy.hpp"
 
@@ -33,12 +34,11 @@ int Ennemy::checkHit(Player* player){
     return 0;
 }
 
-void Ennemy::hurt(float damage, float direction){
-    float attackDamage = damage/(defense/10);
-    health -= (int)attackDamage;
+void Ennemy::hurt(int damage, float direction){
+    health -= damage;
     if(health < 0){
         health = 0;
     }
-    speedX = direction*(attackDamage/2);
+    speedX = direction*(damage*2);
     hurtTime = 30;
 }

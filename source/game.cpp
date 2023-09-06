@@ -11,6 +11,7 @@
 #include "gfx.hpp"
 #include "background.hpp"
 #include "object.hpp"
+#include "interface.hpp"
 #include "player.hpp"
 #include "wadedji.hpp"
 #include "ennemy.hpp"
@@ -70,6 +71,8 @@ Game::Game(int levelId){
     currentLevel = levelId;
     player = new Wadedji(0, 0, 0, 229, 60);
     mmLoadEffect(SFX_HURT);
+    mmLoadEffect(SFX_OUI);
+    mmLoadEffect(SFX_ENVOYER);
     while(1){
         std::string currentLevelName = findLevel(F_LEVEL_LIST, currentLevel);
         std::string gfxName = getGfx(currentLevelName);

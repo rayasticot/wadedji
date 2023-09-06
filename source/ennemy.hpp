@@ -7,15 +7,16 @@ class Ennemy : public Object{
         float accelerationY;
         float speedX;
         float speedY;
-        int health = 20;
-        int defense = 10;
+        int health = 4;
         int hurtTime = 0;
+        int meleeDamage = 1;
     public:
         int getHurtTime(){ return hurtTime; };
         int getHealth(){ return health; };
+        int getMeleeDamage(){ return meleeDamage; };
         virtual void update() = 0;
         int checkHit(Player* player);
-        void hurt(float damage, float direction);
+        void hurt(int damage, float direction);
 };
 
 #endif

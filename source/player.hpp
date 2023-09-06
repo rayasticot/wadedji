@@ -40,6 +40,7 @@ class PlayerParameters{
 
 class Player : public Object{
     protected:
+        Interface inter;
         float accelerationX;
         float accelerationY;
         float speedX;
@@ -48,8 +49,9 @@ class Player : public Object{
         int attackTime = 0;
         int exit = 0;
         int side = 0;
-        int health;
-        int meleeDamage = 10;
+        int health = 8;
+        int hurtTime = 0;
+        int meleeDamage = 2;
         //virtual void attack() = 0;
     
     public:
@@ -58,7 +60,10 @@ class Player : public Object{
         int getSide(){ return side; };
         int getExit(){ return exit; };
         int getMeleeDamage(){ return meleeDamage; };
+        int getHurtTime(){ return hurtTime; };
+        int getHealth(){ return health; };
         void updateLevel(int x, int y);
+        void hurt(int damage, float direction);
         virtual void createSprite();
         virtual void deleteSprite();
         virtual void update() = 0;

@@ -6,6 +6,7 @@
 #include "soundbank_bin.h"
 
 #include "object.hpp"
+#include "interface.hpp"
 #include "player.hpp"
 #include "ennemy.hpp"
 #include "pig.hpp"

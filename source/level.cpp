@@ -11,6 +11,7 @@
 #include "gfx.hpp"
 #include "background.hpp"
 #include "object.hpp"
+#include "interface.hpp"
 #include "player.hpp"
 #include "wadedji.hpp"
 #include "ennemy.hpp"
@@ -100,23 +101,30 @@ int Level::update(){
     for(auto& i : ennemyVector){
         i->updateSprite(camX, camY, bg.getMapSizeX(), bg.getMapSizeY());
     }
-    float direction = 1.0;
+    float playerDirection = 1.0;
     if(player->getSide()){
-        direction = -1.0;
+        playerDirection = -1.0;
     }
     for(auto& i : ennemyVector){
         switch(i->checkHit(player)){
             case 0:
                 break;
             case 1:
+                if(player->getHurtTime() <= 0 && i->getHurtTime() <= 0){
+                    if(player->getHealth() > 0){
+                        sleep = 5;
+                    }
+                    player->hurt(i->getMeleeDamage(), 0);
+                    mmEffect(SFX_HURT);
+                }
                 break;
             case 2:
                 if(i->getHurtTime() <= 0){
-                    i->hurt(player->getMeleeDamage(), direction);
-                    mmEffect(SFX_HURT);
                     if(i->getHealth() > 0){
                         sleep = 5;
                     }
+                    i->hurt(player->getMeleeDamage(), playerDirection);
+                    mmEffect(SFX_HURT);
                 }
                 break;
         }
