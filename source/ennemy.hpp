@@ -17,6 +17,8 @@ class Ennemy : public Object{
         virtual void update() = 0;
         int checkHit(Player* player);
         void hurt(int damage, float direction);
+        virtual int getProj();
+        virtual ~Ennemy(){};
 };
 
 #endif

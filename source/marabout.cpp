@@ -9,7 +9,7 @@
 #include "interface.hpp"
 #include "player.hpp"
 #include "ennemy.hpp"
-#include "pig.hpp"
+#include "marabout.hpp"
 
 #define H_SPEED_LIMIT 1.5
 #define H_ACC 0.1
@@ -18,7 +18,7 @@
 #define V_SPEEDLIMIT 5
 
 
-Pig::Pig(int id, int sprite, int palette, int posx, int posy, int hp){
+Marabout::Marabout(int id, int sprite, int palette, int posx, int posy, int hp){
     spriteId = id;
     positionScreenX = 100;
     positionScreenY = 100;
@@ -34,7 +34,7 @@ Pig::Pig(int id, int sprite, int palette, int posx, int posy, int hp){
     spriteCreated = true;
 }
 
-void Pig::updateVertical(){
+void Marabout::updateVertical(){
     if(checkRangeMapCollisionX(0, positionX, positionY+sizeY, 2) == false){
         if(speedY < 0) speedY += 0.5;
         accelerationY = V_GRAVITYACC;
@@ -54,8 +54,21 @@ void Pig::updateVertical(){
     }
 }
 
-void Pig::update(){
+void Marabout::update(){
     updateVertical();
+    if(lastHealth != health){
+        timeSinceProj = 90;
+    }
+    if(health > 0){
+        proj = 0;
+        if(timeSinceProj > 0){
+            timeSinceProj--;
+        }
+        else{
+            proj = 1;
+            timeSinceProj = 90;
+        }
+    }
     if(hurtTime > 0){
         hurtTime--;
         blink = !blink;
@@ -66,44 +79,27 @@ void Pig::update(){
     if(health <= 0){
         blink = false;
     }
-    if(health > 0 && hurtTime == 0){
-        if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 4)){
-            dirRight = false;
-            speedX = 0;
-        }
-        else if(checkRangeMapCollisionY(0, positionX+speedX-1, positionY, 4)){
-            dirRight = true;
-            speedX = 0;
-        }
 
-        if(dirRight) accelerationX = H_ACC;
-        else         accelerationX = -H_ACC;
+    if(speedX > H_DECELERATION) speedX -= H_DECELERATION;
+    else if(speedX < -H_DECELERATION) speedX += H_DECELERATION;
+    else speedX = 0;
+    accelerationX = 0;
 
-        speedX += accelerationX;
-        if(speedX > H_SPEED_LIMIT) speedX = H_SPEED_LIMIT;
-        if(speedX < -H_SPEED_LIMIT) speedX = -H_SPEED_LIMIT;
+    if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 4)){
+        speedX = -speedX;
     }
-    else{
-        if(speedX > H_DECELERATION) speedX -= H_DECELERATION;
-        else if(speedX < -H_DECELERATION) speedX += H_DECELERATION;
-        else speedX = 0;
-        accelerationX = 0;
-
-        if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 4)){
-            speedX = -speedX;
-        }
-        else if(checkRangeMapCollisionY(0, positionX+speedX-1, positionY, 4)){
-            speedX = -speedX;
-        }
+    else if(checkRangeMapCollisionY(0, positionX+speedX-1, positionY, 4)){
+        speedX = -speedX;
     }
     positionX += speedX;
+    lastHealth = health;
 }
 
-int Pig::getProj(){
-    return 0;
+int Marabout::getProj(){
+    return proj;
 }
 
-Pig::~Pig(){
+Marabout::~Marabout(){
     if(spriteCreated){
         NF_DeleteSprite(0, spriteId);
     }

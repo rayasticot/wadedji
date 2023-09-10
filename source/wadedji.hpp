@@ -15,6 +15,8 @@ class Wadedji : public Player{
         void createSprite();
         void deleteSprite();
         void update();
+        int getProj();
+        ~Wadedji();
 };
 
 #endif

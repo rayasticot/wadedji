@@ -39,6 +39,6 @@ void Ennemy::hurt(int damage, float direction){
     if(health < 0){
         health = 0;
     }
-    speedX = direction*(damage*2);
-    hurtTime = 30;
+    speedX = direction*(damage*2.5);
+    hurtTime = 20;
 }

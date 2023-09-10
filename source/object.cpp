@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -42,11 +43,11 @@ void Object::moveScreenPos(int camPositionX, int camPositionY, int screenSizeX, 
     positionScreenX = positionX-camPositionX;
     positionScreenY = positionY-camPositionY;
 
-    if(positionScreenX < -64){
+    if(positionScreenX < -64 || positionScreenX > SIZE_SCREEN_X){
         positionScreenX = SIZE_SCREEN_X;
     }
 
-    if(positionScreenY < -64){
+    if(positionScreenY < -64 || positionScreenY > SIZE_SCREEN_Y){
         positionScreenY = SIZE_SCREEN_Y;
     }
 }
@@ -135,4 +136,10 @@ void Object::updateSprite(int camPositionX, int camPositionY, int screenSizeX, i
     if(blink){
         NF_MoveSprite(0, spriteId, 256, 192);
     }
+}
+
+void Object::playSoundRandomPitch(mm_word sound){
+    mm_sfxhand soundEffect = mmEffect(sound);
+    int rate = 1024 * std::pow(2, ((rand()%9)-4)/24.0);
+    mmEffectRate(soundEffect, rate);
 }

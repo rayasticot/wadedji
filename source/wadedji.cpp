@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -30,10 +29,12 @@ Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy){
 
 void Wadedji::createSprite(){
     NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
+    spriteCreated = true;
 }
 
 void Wadedji::deleteSprite(){
     NF_DeleteSprite(0, spriteId);
+    spriteCreated = false;
 }
 
 void Wadedji::updateVertical(){
@@ -48,12 +49,10 @@ void Wadedji::updateVertical(){
         speedY = 0;
         if(KEY_B & keysDown()){
             speedY = parameters.vJumpStartSpeed;
-            mm_sfxhand jumpSound = mmEffect(SFX_OUI);
-            int rate = 1024 * std::pow(2, ((rand()%9)-4)/24.0);
-            mmEffectRate(jumpSound, rate);
+            playSoundRandomPitch(SFX_OUI);
         }
     }
-    if(checkRangeMapCollisionX(0, positionX+10, positionY, 2) == true){
+    if(checkRangeMapCollisionX(0, positionX+10, positionY, 2) == true){ // Détecte plafond
         speedY = 0.1;
     }
     if(speedY > 0){
@@ -96,9 +95,7 @@ void Wadedji::updateHorizontal(){
             else{
                 speedX = -4;
             }
-            mm_sfxhand punchSound = mmEffect(SFX_ENVOYER);
-            int rate = 1024 * std::pow(2, ((rand()%9)-4)/24.0);
-            mmEffectRate(punchSound, rate);
+            playSoundRandomPitch(SFX_ENVOYER);
         }
     }
 
@@ -177,11 +174,19 @@ void Wadedji::update(){
     updateVertical();
     updateHorizontal();
     updateAnimation();
-    inter.update(health);
+    inter.update(health, speedX, speedY);
     if(NF_GetTile(0, positionX+16, positionY) == 2 && KEY_UP & keysDown()){
         exit = 1;
     }
     else{
         exit = 0;
     }
+}
+
+int Wadedji::getProj(){
+    return 0;
+}
+
+Wadedji::~Wadedji(){
+    deleteSprite();
 }

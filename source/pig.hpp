@@ -4,9 +4,12 @@
 class Pig : public Ennemy{
     private:
         bool dirRight = false;
+        void updateVertical();
     public:
-        Pig(int id, int sprite, int palette, int posx, int posy);
+        Pig(int id, int sprite, int palette, int posx, int posy, int hp);
         void update();
+        int getProj();
+        ~Pig();
 };
 
 #endif

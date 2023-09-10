@@ -8,6 +8,11 @@ spr/wade_w
 spr/kirikou
 16
 32
+:
+spr/proj
+8
+8
 _PAL
 pal/wade_w
 pal/kirikou
+pal/proj

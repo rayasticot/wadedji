@@ -16,6 +16,7 @@
 #include "pig.hpp"
 #include "gfx.hpp"
 #include "background.hpp"
+#include "projectile.hpp"
 #include "level.hpp"
 #include "game.hpp"
 
@@ -41,14 +42,15 @@ int main(int argc, char **argv){
 	NF_InitSpriteBuffers();
 	NF_InitSpriteSys(0);
 	NF_InitSpriteSys(1);
+	mmInitDefault(std::string("nitro:/soundbank.bin").data());
+	mmSelectMode(MM_MODE_C);
 	NF_InitTiledBgBuffers();
 	NF_InitTiledBgSys(0);
 	NF_InitTiledBgSys(1);
-	mmInitDefault(std::string("nitro:/soundbank.bin").data());
 	NF_InitCmapBuffers();
 	setBrightness(3, -16);
 
-	Game game(0);
+	Game game(3);
 
 	/*
 	GfxGroup testGfx;

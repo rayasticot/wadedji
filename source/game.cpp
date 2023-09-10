@@ -2,6 +2,7 @@
 #include <memory>
 #include <fstream>
 #include <vector>
+#include <array>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -16,6 +17,9 @@
 #include "wadedji.hpp"
 #include "ennemy.hpp"
 #include "pig.hpp"
+#include "marabout.hpp"
+#include "projectile.hpp"
+//#include "maraboutproj.hpp"
 #include "level.hpp"
 #include "game.hpp"
 
@@ -73,6 +77,7 @@ Game::Game(int levelId){
     mmLoadEffect(SFX_HURT);
     mmLoadEffect(SFX_OUI);
     mmLoadEffect(SFX_ENVOYER);
+    mmLoadEffect(SFX_AIE);
     while(1){
         std::string currentLevelName = findLevel(F_LEVEL_LIST, currentLevel);
         std::string gfxName = getGfx(currentLevelName);
@@ -104,4 +109,8 @@ Game::Game(int levelId){
         currentLevel++;
         oldGfx = gfxName;
     }
+}
+
+Game::~Game(){
+    delete player;
 }

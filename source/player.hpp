@@ -67,5 +67,7 @@ class Player : public Object{
         virtual void createSprite();
         virtual void deleteSprite();
         virtual void update() = 0;
+        virtual int getProj();
+        virtual ~Player(){};
 };
 #endif

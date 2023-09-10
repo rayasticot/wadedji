@@ -35,4 +35,5 @@ void Player::hurt(int damage, float direction){
     }
     speedX = direction*(damage*2);
     hurtTime = 60;
+    playSoundRandomPitch(SFX_AIE);
 }

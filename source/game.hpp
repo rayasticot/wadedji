@@ -15,6 +15,7 @@ class Game{
         uint getMusic(std::string fileName);
     public:
         Game(int levelId);
+        ~Game();
 };
 
 #endif

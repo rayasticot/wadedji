@@ -4,6 +4,7 @@
 class Object{
     protected:
         int spriteId;
+        bool spriteCreated = false;
         int sprite;
         int palette;
         float positionX;
@@ -22,14 +23,16 @@ class Object{
         bool checkRangeMapCollisionX(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange);
         bool checkRangeMapCollisionY(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange);
         bool checkCollision(int posX, int posY, int sizeX, int sizeY);
+        static void playSoundRandomPitch(mm_word sound);
     public:
         int getPosX(){ return positionX; };
         int getPosY(){ return positionY; };
         int getSizeX(){ return sizeX; };
         int getSizeY(){ return sizeY; };
+        int getId(){ return spriteId; };
         void moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY, int sizeXModif, int sizeYModif);
-        virtual void update() = 0;
         void updateSprite(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY);
+        virtual ~Object(){};
 };
 
 #endif
