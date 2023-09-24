@@ -1,14 +1,12 @@
 #ifndef PROJECTILE_HPP
 #define PROJECTILE_HPP
 
-class Projectile : public Object{
+class Projectile : public Entity{
     protected:
-        float speed;
-        float dirX;
-        float dirY;
+        float speedMul;
         int damage;
         int touch = 0;
-        void normalizeDir();
+        void normalizeSpeed();
     public:
         void kill();
         int getDamage(){ return damage; };

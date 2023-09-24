@@ -3,7 +3,6 @@
 
 class Wadedji : public Player{
     private:
-        PlayerParameters parameters = PlayerParameters(2, 0.5, 0.25, 5, 0.15, -4.5, 0.3, 6);
         int frameAnim;
         int frameTime;
 
@@ -11,7 +10,7 @@ class Wadedji : public Player{
         void updateHorizontal();
         void updateAnimation();
     public:
-        Wadedji(int id, int sprite, int palette, int posx, int posy);
+        Wadedji(int id, int sprite_, int palette_, int posx, int posy);
         void createSprite();
         void deleteSprite();
         void update();

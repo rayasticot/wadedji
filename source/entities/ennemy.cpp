@@ -1,14 +1,18 @@
 #include <iostream>
+#include <fstream>
+#include <cmath>
+#include <array>
+#include <vector>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#include "object.hpp"
+#include "entities/entity.hpp"
 #include "interface.hpp"
-#include "player.hpp"
-#include "ennemy.hpp"
+#include "entities/player.hpp"
+#include "entities/ennemy.hpp"
 
 
 int Ennemy::checkHit(Player* player){

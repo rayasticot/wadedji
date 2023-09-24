@@ -1,14 +1,15 @@
 #include <iostream>
+#include <array>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#include "object.hpp"
+#include "entities/entity.hpp"
 #include "interface.hpp"
-#include "player.hpp"
-#include "wadedji.hpp"
+#include "entities/player.hpp"
+#include "entities/wadedji.hpp"
 
 
 Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy){
@@ -23,7 +24,6 @@ Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy){
     speedY = 0;
     sizeX = 32;
     sizeY = 32;
-
     inter.start();
 }
 
@@ -174,7 +174,7 @@ void Wadedji::update(){
     updateVertical();
     updateHorizontal();
     updateAnimation();
-    inter.update(health, speedX, speedY);
+    inter.update(health);
     if(NF_GetTile(0, positionX+16, positionY) == 2 && KEY_UP & keysDown()){
         exit = 1;
     }

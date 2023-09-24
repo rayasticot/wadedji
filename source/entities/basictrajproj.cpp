@@ -1,15 +1,16 @@
 #include <iostream>
+#include <array>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#include "object.hpp"
+#include "entities/entity.hpp"
 #include "interface.hpp"
-#include "player.hpp"
-#include "projectile.hpp"
-#include "basictrajproj.hpp"
+#include "entities/player.hpp"
+#include "entities/projectile.hpp"
+#include "entities/basictrajproj.hpp"
 
 
 BasicTrajProj::BasicTrajProj(int id, int sprite, int palette, int posx, int posy, int targetX, int targetY, int projSpeed, int projDamage){
@@ -21,21 +22,21 @@ BasicTrajProj::BasicTrajProj(int id, int sprite, int palette, int posx, int posy
     sizeX = 8;
     sizeY = 8;
     damage = projDamage;
-    speed = projSpeed;
-    dirX = targetX-positionX;
-    dirY = targetY-positionY;
-    normalizeDir();
-    dirX *= speed;
-    dirY *= speed;
+    speedMul = projSpeed;
+    speedX = targetX-positionX;
+    speedY = targetY-positionY;
+    normalizeSpeed();
+    speedX *= speedMul;
+    speedY *= speedMul;
 
     NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
     spriteCreated = true;
 }
 
 int BasicTrajProj::update(){
-    positionX += dirX;
-    positionY += dirY;
-    if(NF_GetTile(0, positionX+(sizeX/2), positionY+(sizeX/2))){
+    positionX += speedX;
+    positionY += speedY;
+    if(NF_GetTile(0, positionX+(sizeX/2), positionY+(sizeX/2)) == 1){
         touch = 1;
     }
     return touch;

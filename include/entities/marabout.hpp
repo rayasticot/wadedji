@@ -6,7 +6,6 @@ class Marabout : public Ennemy{
         int timeSinceProj = 90;
         int proj = 0;
         int lastHealth = 0;
-        void updateVertical();
     public:
         Marabout(int id, int sprite, int palette, int posx, int posy, int hp);
         void update();

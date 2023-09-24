@@ -1,7 +1,7 @@
-#ifndef OBJECT_HPP
-#define OBJECT_HPP
+#ifndef ENTITY_HPP
+#define ENTITY_HPP
 
-class Object{
+class Entity{
     protected:
         int spriteId;
         bool spriteCreated = false;
@@ -9,6 +9,10 @@ class Object{
         int palette;
         float positionX;
         float positionY;
+        float speedX;
+        float speedY;
+        float accelerationX;
+        float accelerationY;
         int positionScreenX;
         int positionScreenY;
         int sizeX;
@@ -19,6 +23,7 @@ class Object{
         bool flagNotCenterY;
         bool blink = false;
 
+        void updateGravity();
         void moveScreenPos(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY);
         bool checkRangeMapCollisionX(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange);
         bool checkRangeMapCollisionY(u8 collisionMapSlot, u16 startX, u16 startY, u8 pixelRange);
@@ -32,7 +37,7 @@ class Object{
         int getId(){ return spriteId; };
         void moveCamToPos(int* camPositionX, int* camPositionY, int screenSizeX, int screenSizeY, int sizeXModif, int sizeYModif);
         void updateSprite(int camPositionX, int camPositionY, int screenSizeX, int screenSizeY);
-        virtual ~Object(){};
+        virtual ~Entity(){};
 };
 
 #endif

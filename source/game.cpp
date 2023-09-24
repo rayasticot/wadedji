@@ -11,15 +11,15 @@
 
 #include "gfx.hpp"
 #include "background.hpp"
-#include "object.hpp"
+#include "entities/entity.hpp"
 #include "interface.hpp"
-#include "player.hpp"
-#include "wadedji.hpp"
-#include "ennemy.hpp"
-#include "pig.hpp"
-#include "marabout.hpp"
-#include "projectile.hpp"
-//#include "maraboutproj.hpp"
+#include "entities/player.hpp"
+#include "entities/wadedji.hpp"
+#include "entities/grounditem.hpp"
+#include "entities/ennemy.hpp"
+#include "entities/pig.hpp"
+#include "entities/marabout.hpp"
+#include "entities/projectile.hpp"
 #include "level.hpp"
 #include "game.hpp"
 
@@ -67,6 +67,7 @@ uint Game::getMusic(std::string fileName){
     std::getline(lvlFile, readText);
     std::getline(lvlFile, readText);
     std::getline(lvlFile, readText);
+    lvlFile.close();
 
     return stoi(readText);
 }

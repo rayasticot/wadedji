@@ -24,7 +24,7 @@ LIBNDS	:=	$(DEVKITPRO)/libnds
 
 GAME_TITLE	    :=	projet wade
 GAME_SUBTITLE1	:= 2
-GAME_SUBTITLE2	:= 8
+GAME_SUBTITLE2	:= 9
 GAME_ICON		:=	$(CURDIR)/../icon.bmp
 
 _ADDFILES	:=	-d $(NITRO_FILES)
@@ -66,7 +66,8 @@ _ADDFILES	:=	-d $(NITRO_FILES)
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	source
+SOURCES		:=	source \
+ 				source/entities
 INCLUDES	:=	include
 DATA		:=	data
 NITRODATA	:=	nitrofiles

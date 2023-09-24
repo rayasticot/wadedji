@@ -1,15 +1,17 @@
 #include <iostream>
+#include <array>
+#include <vector>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#include "object.hpp"
+#include "entities/entity.hpp"
 #include "interface.hpp"
-#include "player.hpp"
-#include "ennemy.hpp"
-#include "marabout.hpp"
+#include "entities/player.hpp"
+#include "entities/ennemy.hpp"
+#include "entities/marabout.hpp"
 
 #define H_SPEED_LIMIT 1.5
 #define H_ACC 0.1
@@ -29,33 +31,14 @@ Marabout::Marabout(int id, int sprite, int palette, int posx, int posy, int hp){
     sizeX = 16;
     sizeY = 32;
     health = hp;
+    type = 1;
 
     NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
     spriteCreated = true;
 }
 
-void Marabout::updateVertical(){
-    if(checkRangeMapCollisionX(0, positionX, positionY+sizeY, 2) == false){
-        if(speedY < 0) speedY += 0.5;
-        accelerationY = V_GRAVITYACC;
-        speedY += accelerationY;
-        if(speedY > V_SPEEDLIMIT) speedY = V_SPEEDLIMIT;
-    }
-    else{
-        accelerationY = 0;
-        speedY = 0;
-    }
-    if(speedY > 0){
-        for(int i = 0; i <= (int)speedY; i++){
-            if(checkRangeMapCollisionX(0, positionX, positionY+sizeY+i, 2) == false) positionY++;
-            else break;
-        }
-        positionY += (speedY - (int)speedY);
-    }
-}
-
 void Marabout::update(){
-    updateVertical();
+    updateGravity();
     if(lastHealth != health){
         timeSinceProj = 90;
     }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 #include <cmath>
 #include <nds.h>
 #include <nf_lib.h>
@@ -6,20 +7,20 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-#include "object.hpp"
+#include "entities/entity.hpp"
 #include "interface.hpp"
-#include "player.hpp"
-#include "projectile.hpp"
+#include "entities/player.hpp"
+#include "entities/projectile.hpp"
 
 
 void Projectile::kill(){
     touch = 1;
 }
 
-void Projectile::normalizeDir(){
-    float norm = std::sqrt(std::pow(dirX, 2)+std::pow(dirY, 2));
-    dirX /= norm;
-    dirY /= norm;
+void Projectile::normalizeSpeed(){
+    float norm = std::sqrt(std::pow(speedX, 2)+std::pow(speedY, 2));
+    speedX /= norm;
+    speedY /= norm;
 }
 
 int Projectile::checkHit(Player* player){
