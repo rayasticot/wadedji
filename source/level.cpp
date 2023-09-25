@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include <unordered_map>
+#include <functional>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -188,6 +190,7 @@ void Level::freeze(){
 
 void Level::updateEntities(){
     player->update();
+    activeEffect.applyActive(*player);
     for(auto& i : ennemyVector){
         i->update();
     }

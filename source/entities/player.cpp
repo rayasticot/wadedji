@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <unordered_map>
+#include <functional>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -23,6 +25,15 @@ PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceler
     vJumpStartSpeed = vjumpstartspeed;
     hRunAcc = hrunacc;
     hRunSpeedLimit = hrunspeedlimit;
+
+    default_hSpeedLimit = hSpeedLimit;
+    default_hAcc = hAcc;
+    default_hDeceleration = hDeceleration;
+    default_vSpeedLimit = vSpeedLimit;
+    default_vGravityAcc = vGravityAcc;
+    default_vJumpStartSpeed = vJumpStartSpeed;
+    default_hRunAcc = hRunAcc;
+    default_hRunSpeedLimit = hRunSpeedLimit;
 }
 
 void Player::updateLevel(int x, int y){
@@ -44,11 +55,15 @@ void Player::obtainItem(int item){
     if(!item){
         return;
     }
-    if(!effectIndex.at(item-1) || !itemIndex.at(item-1)){
+    int itemStorage = item-1;
+    if(!effectIndex.at(itemStorage) || !itemIndex.at(itemStorage)){
         applyItemEffect(item);
     }
-    if(!itemIndex.at(item-1)){
-        itemIndex.at(item-1) = true;
+    if(!itemIndex.at(itemStorage)){
+        itemIndex.at(itemStorage) = true;
+    }
+    if(effectIndex.at(itemStorage) == 2){
+        activeIndex.emplace_back(itemStorage);
     }
 }
 

@@ -24,6 +24,7 @@ class Level{
         LevelBackground bg;
         GfxGroup* gfx;
         Player* player;
+        ActiveEffect activeEffect;
 
         std::vector<std::unique_ptr<Ennemy>> ennemyVector;
         std::array<std::unique_ptr<Projectile>, 24> playerProj = {};

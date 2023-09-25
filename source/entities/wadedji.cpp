@@ -1,5 +1,7 @@
 #include <iostream>
 #include <array>
+#include <unordered_map>
+#include <functional>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -87,7 +89,7 @@ void Wadedji::updateHorizontal(){
             if(KEY_LEFT & keysHeld()) accelerationX -= parameters.hRunAcc;
         }
 
-        if(KEY_Y & keysDown() && !attackTime){ 
+        if(KEY_Y & keysDown() && !attackTime){
             attackTime = 20;
             if(!side){
                 speedX = 4;
@@ -171,6 +173,7 @@ void Wadedji::update(){
     if(health <= 0){
         blink = false;
     }
+    timer++;
     updateVertical();
     updateHorizontal();
     updateAnimation();

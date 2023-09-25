@@ -26,6 +26,15 @@ class PlayerParameters{
         float hRunAcc;
         float hRunSpeedLimit;
 
+        float default_hSpeedLimit;
+        float default_hAcc;
+        float default_hDeceleration;
+        float default_vSpeedLimit;
+        float default_vGravityAcc;
+        float default_vJumpStartSpeed;
+        float default_hRunAcc;
+        float default_hRunSpeedLimit;
+
         PlayerParameters(
             float hspeedlimit,
             float hacc,
@@ -40,11 +49,11 @@ class PlayerParameters{
 
 class Player : public Entity{
     protected:
-        static constexpr std::array<bool, 2> effectIndex = {0, 0};
+        static constexpr std::array<int, 4> effectIndex = {0, 0, 2, 2};
         //std::vector<std::unique_ptr<ActiveItem>> items;
-        std::array<bool, 2> itemIndex;
+        std::vector<int> activeIndex;
+        std::array<bool, 4> itemIndex;
         //std::array<int, 4> = {0, 1, 0, 2};
-
         Interface inter;
         PlayerParameters parameters = PlayerParameters(2, 0.5, 0.25, 5, 0.15, -4.5, 0.3, 6);
         bool run = false;
@@ -52,6 +61,7 @@ class Player : public Entity{
         int exit = 0;
         int side = 0;
         int hurtTime = 0;
+        u32 timer = 0;
 
         int health = 8; // petit h
         int mana = 50; // petit m
@@ -61,6 +71,8 @@ class Player : public Entity{
         int maxMana = 50; // grand M
         int meleeDamage = 2; // petit d
         int magicDamage = 2; // grand D
+
+        friend class ActiveEffect;
 
     public:
         //Player(int id, int sprite, int palette, int posx, int posy);
@@ -81,6 +93,18 @@ class Player : public Entity{
         virtual void update() = 0;
         virtual int getProj() = 0;
         virtual ~Player(){};
+};
+
+class ActiveEffect{
+    private:
+        void portefeuilleMagique(Player& player);
+        void attackGravity(Player& player);
+        const std::unordered_map<int, std::function<void(ActiveEffect&, Player&)>> activeEffectList = {
+            {2, std::mem_fn(&ActiveEffect::portefeuilleMagique)},
+            {3, std::mem_fn(&ActiveEffect::attackGravity)}
+        };
+    public:
+        void applyActive(Player& player);
 };
 
 #endif

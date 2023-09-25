@@ -1,6 +1,8 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <unordered_map>
+#include <functional>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
