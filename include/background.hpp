@@ -24,8 +24,8 @@ class Background{
 
 class LevelBackground{
     private:
-        Background bg[4];
-        bool created[4] = {false, false, false, false};
+        std::array<Background, 4> bg;
+        std::array<bool, 4> created = {false, false, false, false};
         std::string colMapName;
         int colMapSizeX;
         int colMapSizeY;

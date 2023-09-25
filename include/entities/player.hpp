@@ -64,11 +64,11 @@ class Player : public Entity{
         u32 timer = 0;
 
         int health = 8; // petit h
-        int mana = 50; // petit m
+        int mana = 500; // petit m
         int fcfa = 100; // petit f
 
         int maxHealth = 8; // grand H
-        int maxMana = 50; // grand M
+        int maxMana = 500; // grand M
         int meleeDamage = 2; // petit d
         int magicDamage = 2; // grand D
 

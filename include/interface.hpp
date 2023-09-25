@@ -4,7 +4,7 @@
 class Interface{
     public:
         void start();
-        void update(int health);
+        void update(int health, int mana, int maxMana);
 };
 
 #endif

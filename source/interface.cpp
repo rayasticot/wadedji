@@ -9,21 +9,32 @@
 
 
 void Interface::start(){
-    NF_LoadSpriteGfx("ui/spr/lifebone", 128, 8, 16);
-    NF_VramSpriteGfx(1, 128, 0, true);
-    NF_LoadSpritePal("ui/pal/lifebone", 16);
-    NF_VramSpritePal(1, 16, 0);
-
-    for(int i = 0; i < 32; i++){
-        NF_CreateSprite(1, i, 0, 0, 256, 192);
-    }
+    NF_LoadTilesForBg("ui/bottomtilemap", "bottommap", 256, 256, 0, 11);
+    NF_CreateTiledBg(1, 1, "bottommap");
 }
 
-void Interface::update(int health){
+void Interface::update(int health, int mana, int maxMana){
     for(int i = 0; i < 32; i++){
-        NF_MoveSprite(1, i, 256, 192);
+        NF_SetTileOfMap(1, 1, i, (i/16), 11);
+        NF_SetTileOfMap(1, 1, i, (i/16)+1, 11);
     }
     for(int i = 0; i < health; i++){
-        NF_MoveSprite(1, i, 0 + (i%16)*8, 0 + (i/16)*16);
+        NF_SetTileOfMap(1, 1, i, (i/16), 1);
+        NF_SetTileOfMap(1, 1, i, (i/16)+1, 2);
     }
+    for(int i = 0; i < 10; i++){
+        NF_SetTileOfMap(1, 1, 22+i, 0, 11);
+    }
+    if(mana > 0){
+        int mana80 = ((float)mana/(float)maxMana)*80;
+        int manaNumber = mana80/8;
+        for(int i = 0; i < manaNumber; i++){
+            NF_SetTileOfMap(1, 1, 31-i, 0, 3);
+        }
+        int manaFirst = mana80%8;
+        if(manaFirst){
+            NF_SetTileOfMap(1, 1, 31-manaNumber, 0, 11-manaFirst);
+        }
+    }
+    NF_UpdateVramMap(1, 1);
 }

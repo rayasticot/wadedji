@@ -177,7 +177,7 @@ void Wadedji::update(){
     updateVertical();
     updateHorizontal();
     updateAnimation();
-    inter.update(health);
+    inter.update(health, mana, maxMana);
     if(NF_GetTile(0, positionX+16, positionY) == 2 && KEY_UP & keysDown()){
         exit = 1;
     }

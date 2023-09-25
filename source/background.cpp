@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <array>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
@@ -53,8 +54,8 @@ void Background::scrollBg(int positionX, int positionY){
     int newPositionX = positionX;
     int newPositionY = positionY;
     if(bgLayer > 0){
-        newPositionX = (int)positionX*scrollSpeed;
-        newPositionY = (int)positionY*scrollSpeed;
+        newPositionX = (int)positionX*0.5;
+        newPositionY = (int)positionY*0.5;
     }
     NF_ScrollBg(0, bgLayer, newPositionX, newPositionY);
 }
@@ -79,13 +80,13 @@ void LevelBackground::readBackgroundFile(std::string bgFilename){
         if(readText == "\\") continue;
         std::string tempName = readText;
         std::getline(bgFile, readText);
-        float tempSpeed = std::stof(readText);
+        float tempSpeed = std::stof(readText); // Problème ici ça lit 0 alors que ça devrait lire 0.5 jsp pk
         std::getline(bgFile, readText);
         int tempSizeX = std::stoi(readText);
         std::getline(bgFile, readText);
         int tempSizeY = std::stoi(readText);
-        bg[i].setBg(tempName, std::to_string(i), tempSpeed, tempSizeX, tempSizeY, (u8)i);
-        created[i] = true;
+        bg.at(i).setBg(tempName, std::to_string(i), tempSpeed, tempSizeX, tempSizeY, (u8)i);
+        created.at(i) = true;
     }
     std::getline(bgFile, readText);
     if(readText != ":C") NF_Error(5, "ds", 2);
@@ -101,55 +102,55 @@ void LevelBackground::readBackgroundFile(std::string bgFilename){
 void LevelBackground::loadBg(uint id){
     if(id >= 4){
         for(int i = 0; i < 4; i++){
-            bg[i].loadBg();
+            bg.at(i).loadBg();
         }
     }
     else{
-        bg[id].loadBg();
+        bg.at(id).loadBg();
     }
 }
 
 void LevelBackground::unLoadBg(uint id){
     if(id >= 4){
         for(int i = 0; i < 4; i++){
-            bg[i].unLoadBg();
+            bg.at(i).unLoadBg();
         }
     }
     else{
-        bg[id].unLoadBg();
+        bg.at(id).unLoadBg();
     }
 }
 
 void LevelBackground::createBg(uint id){
     if(id >= 4){
         for(int i = 0; i < 4; i++){
-            bg[i].createBg();
+            bg.at(i).createBg();
         }
     }
     else{
-        bg[id].createBg();
+        bg.at(id).createBg();
     }
 }
 
 void LevelBackground::deleteBg(uint id){
     if(id >= 4){
         for(int i = 0; i < 4; i++){
-            bg[i].deleteBg();
+            bg.at(i).deleteBg();
         }
     }
     else{
-        bg[id].deleteBg();
+        bg.at(id).deleteBg();
     }
 }
 
 void LevelBackground::scrollBg(uint id, int positionX, int positionY){
     if(id >= 4){
         for(int i = 0; i < 4; i++){
-            bg[i].scrollBg(positionX, positionY);
+            bg.at(i).scrollBg(positionX, positionY);
         }
     }
     else{
-        bg[id].scrollBg(positionX, positionY);
+        bg.at(id).scrollBg(positionX, positionY);
     }
 }
 
