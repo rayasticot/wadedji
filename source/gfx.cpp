@@ -22,7 +22,7 @@ Sprite::Sprite(std::string fileName, u8 xSize, u8 ySize, u8 screen, u8 slot){
 void Sprite::loadSpr(){
     if(loaded == false){
         NF_LoadSpriteGfx(nameSprite.data(), slotMemory, sizeX, sizeY);
-        NF_VramSpriteGfx(screenNumber, slotMemory, slotMemory, true);
+        NF_VramSpriteGfx(screenNumber, slotMemory, slotMemory, false);
         loaded = true;
     }
 }

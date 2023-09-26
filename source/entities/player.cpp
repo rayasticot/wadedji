@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <map>
 #include <unordered_map>
 #include <functional>
 #include <nds.h>
@@ -9,6 +10,7 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
+#include "gfx.hpp"
 #include "entities/entity.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"

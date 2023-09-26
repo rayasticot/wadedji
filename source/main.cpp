@@ -2,12 +2,14 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <map>
 #include <nds.h>
 #include <nf_lib.h>
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
+#include "gfx.hpp"
 #include "entities/entity.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"

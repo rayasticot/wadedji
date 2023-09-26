@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <unordered_map>
+#include <map>
 #include <functional>
 #include <nds.h>
 #include <nf_lib.h>

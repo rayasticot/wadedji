@@ -53,7 +53,12 @@ class Player : public Entity{
         //std::vector<std::unique_ptr<ActiveItem>> items;
         std::vector<int> activeIndex;
         std::array<bool, 4> itemIndex;
-        //std::array<int, 4> = {0, 1, 0, 2};
+        std::map<KEYPAD_BITS, int> holding = {
+            {KEY_A, 0},
+            {KEY_B, 1},
+            {KEY_X, 0},
+            {KEY_Y, 2}
+        };
         Interface inter;
         PlayerParameters parameters = PlayerParameters(2, 0.5, 0.25, 5, 0.15, -4.5, 0.3, 6);
         bool run = false;
