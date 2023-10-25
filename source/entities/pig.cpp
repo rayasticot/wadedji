@@ -33,7 +33,7 @@ Pig::Pig(int id, int sprite, int palette, int posx, int posy, int hp){
     speedX = 0;
     speedY = 0;
     sizeX = 16;
-    sizeY = 32;
+    sizeY = 16;
     health = hp;
     type = 0;
 
@@ -54,11 +54,11 @@ void Pig::update(){
         blink = false;
     }
     if(health > 0 && hurtTime == 0){
-        if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 4)){
+        if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 2)){
             dirRight = false;
             speedX = 0;
         }
-        else if(checkRangeMapCollisionY(0, positionX+speedX-1, positionY, 4)){
+        else if(checkRangeMapCollisionY(0, positionX+speedX-1, positionY, 2)){
             dirRight = true;
             speedX = 0;
         }
@@ -76,14 +76,42 @@ void Pig::update(){
         else speedX = 0;
         accelerationX = 0;
 
-        if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 4)){
+        if(checkRangeMapCollisionY(0, positionX+speedX+17, positionY, 2)){
             speedX = -speedX;
         }
-        else if(checkRangeMapCollisionY(0, positionX+speedX-1, positionY, 4)){
+        else if(checkRangeMapCollisionY(0, positionX+speedX-1, positionY, 2)){
             speedX = -speedX;
         }
     }
     positionX += speedX;
+
+    updateAnimation();
+}
+
+void Pig::updateAnimation(){
+    if(speedX > 0){
+        NF_HflipSprite(0, spriteId, true);
+    }
+    else if(speedX < 0){
+        NF_HflipSprite(0, spriteId, false);
+    }
+    if(!alive){
+        NF_SpriteFrame(0, spriteId, 2);
+        return;
+    }
+    if(hurtTime == 0){
+        frameTime++;
+        frameTime = frameTime%6;
+        if(frameTime == 5){
+            frameAnim++;
+            frameAnim = frameAnim%2;
+        }
+    }
+    else{
+        frameAnim = 0;
+        frameTime = 0;
+    }
+    NF_SpriteFrame(0, spriteId, frameAnim);
 }
 
 int Pig::getProj(){

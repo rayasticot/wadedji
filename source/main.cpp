@@ -22,6 +22,8 @@
 #include "entities/projectile.hpp"
 #include "level.hpp"
 #include "game.hpp"
+#include "title.hpp"
+
 
 void crashGame(std::string message){
 	consoleDemoInit();
@@ -51,8 +53,8 @@ int main(int argc, char **argv){
 	NF_InitTiledBgSys(0);
 	NF_InitTiledBgSys(1);
 	NF_InitCmapBuffers();
-	setBrightness(3, -16);
-
+	NF_InitTextSys(1);
+	Title title;
 	Game game(0);
 
 	return 0;

@@ -125,7 +125,7 @@ bool Entity::checkRangeMapCollisionY(u8 collisionMapSlot, u16 startX, u16 startY
 }
 
 bool Entity::checkCollision(int posX, int posY, int otherSizeX, int otherSizeY){
-    if((int)positionX+sizeX >= posX && (int)positionX < posX+otherSizeX){
+    if((int)positionX+sizeX+offsetX >= posX && (int)(positionX+offsetX) < posX+otherSizeX){
         if((int)positionY+sizeY >= posY && (int)positionY < posY+otherSizeY){
             return true;
         }

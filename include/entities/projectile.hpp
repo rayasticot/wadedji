@@ -11,6 +11,7 @@ class Projectile : public Entity{
         void kill();
         int getDamage(){ return damage; };
         int checkHit(Player* player);
+        int checkHit(Ennemy* ennemy);
         virtual int update();
         virtual ~Projectile(){};
 };

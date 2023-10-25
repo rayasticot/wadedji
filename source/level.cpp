@@ -24,13 +24,15 @@
 #include "entities/marabout.hpp"
 #include "entities/projectile.hpp"
 #include "entities/basictrajproj.hpp"
+#include "entities/sintrajproj.hpp"
 #include "level.hpp"
 
 #define ENN_PIG 0
 #define ENN_MARA 1
 
 #define PIG_SPR 2
-#define PROJ_SPR 3
+#define MARA_F_SPR 3
+#define PROJ_SPR 4
 
 
 PoolItem::PoolItem(int id, int rate){
@@ -51,8 +53,8 @@ void DropPool::loadPoolFile(std::string fileName){
     }
     int index = 0;
     int totalRate = 0;
+    std::getline(lvlFile, readText);
     while(readText != "\\"){
-        std::getline(lvlFile, readText);
         int itemId = stoi(readText);
         std::getline(lvlFile, readText);
         int dropRate = stoi(readText);
@@ -90,16 +92,16 @@ int DropPool::giveItem(){
 void Level::addEnnemy(int type, int positionX, int positionY, int health, int id){
     switch(type){
         case -1:
-            {
-                int projId = findIdItem();
-                groundItems.at(projId).reset(new GroundItem(projId+112, 1, 1, positionX, positionY, health));
-                break;
-            }
+        {
+            int projId = findIdItem();
+            groundItems.at(projId).reset(new GroundItem(projId+112, 1, 1, positionX, positionY, health));
+            break;
+        }
         case ENN_PIG:
             ennemyVector.emplace_back(new Pig(id, PIG_SPR, 2, positionX, positionY, health));
             break;
         case ENN_MARA:
-            ennemyVector.emplace_back(new Marabout(id, PIG_SPR, 2, positionX, positionY, health));
+            ennemyVector.emplace_back(new Marabout(id, MARA_F_SPR, 2, positionX, positionY, health));
             break;
     }
 }
@@ -135,7 +137,6 @@ void Level::readLevelFile(std::string fileName){
     if(readText != "_ENN"){
         NF_Error(231, "d", 3);
     }
-
     int sprId = 1;
     std::getline(lvlFile, readText);
     while(readText != "\\"){
@@ -172,6 +173,16 @@ int Level::findIdEnnemy(){
     return 229;
 }
 
+int Level::findIdPlayer(){
+    for(int i = 0; i < 24; i++){
+        if(playerProj.at(i) == NULL){
+            return i;
+        }
+    }
+    NF_Error(6553, "das", 2);
+    return 229;
+}
+
 int Level::findIdItem(){
     for(int i = 0; i < 16; i++){
         if(groundItems.at(i) == NULL){
@@ -204,19 +215,31 @@ void Level::updateEntities(){
         }
         projCounter++;
     }
+    for(auto& i : playerProj){
+        if(i == NULL) continue;
+        if(i->update()){
+            int projId = i->getId()-88;
+            playerProj.at(projId) = NULL;
+        }
+        projCounter++;
+    }
     for(auto& i : groundItems){
         i->update();
     }
 }
 
 void Level::updateGfx(){
-    player->moveCamToPos(&camX, &camY, bg.getMapSizeX(), bg.getMapSizeY(), -16, 0);
+    player->moveCamToPos(&camX, &camY, bg.getMapSizeX(), bg.getMapSizeY(), -16, 0+(32-player->getSizeY()));
 	bg.scrollBg(4, oldcamX, oldcamY);
     player->updateSprite(oldcamX, oldcamY, bg.getMapSizeX(), bg.getMapSizeY());
     for(auto& i : ennemyVector){
         i->updateSprite(camX, camY, bg.getMapSizeX(), bg.getMapSizeY());
     }
     for(auto& i : ennemyProj){
+        if(i == NULL) continue;
+        i->updateSprite(camX, camY, bg.getMapSizeX(), bg.getMapSizeY());
+    }
+    for(auto& i : playerProj){
         if(i == NULL) continue;
         i->updateSprite(camX, camY, bg.getMapSizeX(), bg.getMapSizeY());
     }
@@ -235,9 +258,33 @@ void Level::checkProj(){
             case 0:
                 break;
             case 1:
+            {
                 int projId = findIdEnnemy();
-                ennemyProj.at(projId).reset(new BasicTrajProj(projId+64, PROJ_SPR, PROJ_SPR, i->getPosX(), i->getPosY(), player->getPosX()+16, player->getPosY()+16, 2, 1));
+                bool ennemySide = player->getPosX()-i->getPosX() < 0;
+                NF_HflipSprite(0, i->getId(), ennemySide);
+                int posAdd = 24;
+                if(ennemySide) posAdd = 8;
+                ennemyProj.at(projId).reset(new SinTrajProj(projId+64, PROJ_SPR, 3, i->getPosX()+posAdd, i->getPosY()+12, i->getPosX()-(i->getPosX()+posAdd-(player->getPosX()+16)), i->getPosY()+12, 2, 1, 2, 15));
                 break;
+            }
+        }
+    }
+}
+
+void Level::checkPlayerProj(){
+    switch(player->getProj()){
+        case 0:
+            break;
+        case 1:
+        {
+            int projId = findIdPlayer();
+            bool side = player->getSide();
+            int posAdd = 24;
+            if(side) posAdd = 8;
+            int trajAdd = 1;
+            if(side) trajAdd = -1;
+            playerProj.at(projId).reset(new SinTrajProj(projId+88, PROJ_SPR, 3, player->getPosX()+posAdd, player->getPosY()+12, player->getPosX()+trajAdd+posAdd, player->getPosY()+12, 3, player->getProjDamage(), 2, 15));
+            break;
         }
     }
 }
@@ -246,9 +293,10 @@ void Level::checkGroundItem(){
     for(auto& i : groundItems){
         if(i == NULL) continue;
         if(i->checkHit(player) && !i->getWait()){
-            player->obtainItem(i->getItemId());
-            int groundItemId = i->getId()-112;
-            groundItems.at(groundItemId) = NULL;
+            if(player->setupItem(i->getItemId())){
+                int groundItemId = i->getId()-112;
+                groundItems.at(groundItemId) = NULL;
+            }
         }
     }
 }
@@ -312,6 +360,35 @@ void Level::checkHurtProj(){
     }
 }
 
+void Level::checkHurtPlayerProj(){
+    float playerDirection = 1.0;
+    if(player->getSide()){
+        playerDirection = -1.0;
+    }
+    for(auto& proj : playerProj){
+        for(auto& ennemy : ennemyVector){
+            switch(proj->checkHit(ennemy.get())){
+                case 0:
+                    break;
+                case 1:
+                    if(ennemy->getHurtTime() <= 0){
+                        ennemy->hurt(proj->getDamage(), playerDirection);
+                        if(ennemy->getHealth() <= 0 && ennemy->alive){
+                            ennemy->alive = false;
+                            int item = pools.at(ennemy->getType()).giveItem();
+                            if(item){
+                                int projId = findIdItem();
+                                groundItems.at(projId).reset(new GroundItem(projId+112, 1, 1, ennemy->getPosX(), ennemy->getPosY(), item));
+                            }
+                        }
+                    }
+                    proj->kill();
+                    break;
+            }
+        }
+    }
+}
+
 void Level::screenRefresh(){
     NF_SpriteOamSet(0);
 	NF_SpriteOamSet(1);
@@ -327,8 +404,10 @@ int Level::update(){
     freeze();
     updateEntities();
     checkProj();
+    checkPlayerProj();
     checkGroundItem();
     checkHurtEnnemy();
+    checkHurtPlayerProj();
     checkHurtProj();
     updateGfx();
 

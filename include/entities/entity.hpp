@@ -17,6 +17,7 @@ class Entity{
         int positionScreenY;
         int sizeX;
         int sizeY;
+        int offsetX = 0;
         int shakeX = 0;
         int shakeY = 0;
         bool flagNotCenterX;

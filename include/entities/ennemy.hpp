@@ -21,6 +21,9 @@ class DropPool{
 
 class Ennemy : public Entity{
     protected:
+        int frameAnim = 0;
+        int frameTime = 0;
+
         int health = 4;
         int hurtTime = 0;
         int meleeDamage = 1;

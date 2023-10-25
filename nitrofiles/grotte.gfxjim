@@ -9,8 +9,12 @@ spr/itemlist
 16
 16
 :
-spr/kirikou
+spr/pig
 16
+16
+:
+spr/marabout_fire
+32
 32
 :
 spr/proj
@@ -19,5 +23,5 @@ spr/proj
 _PAL
 pal/wade_w
 pal/itemlist
-pal/kirikou
+pal/ennemy
 pal/proj

@@ -13,6 +13,7 @@
 #include "entities/entity.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
+#include "entities/ennemy.hpp"
 #include "entities/projectile.hpp"
 #include "entities/basictrajproj.hpp"
 

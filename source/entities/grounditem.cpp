@@ -52,8 +52,7 @@ GroundItem::GroundItem(int id, int sprite_, int palette_, int posx, int posy, in
     sizeY = 16;
     itemId = itemid;
     NF_CreateSprite(0, spriteId, sprite_, palette_, positionScreenX, positionScreenY);
-    NF_SpriteFrame(0, spriteId, itemId-1);
-    nocashMessage(std::to_string(spriteId).data());
+    NF_SpriteFrame(0, spriteId, itemId+2);
     spriteCreated = true;
 }
 

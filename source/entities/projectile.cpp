@@ -14,6 +14,7 @@
 #include "entities/entity.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
+#include "entities/ennemy.hpp"
 #include "entities/projectile.hpp"
 
 
@@ -29,9 +30,22 @@ void Projectile::normalizeSpeed(){
 
 int Projectile::checkHit(Player* player){
     int pStartX = player->getPosX()+8;
-    int pStartY = player->getPosY();
+    int pStartY = player->getPosY()+player->getCrouchPosY();
     int pSizeX = 16;
-    int pSizeY = 32;
+    int pSizeY = player->getSizeY();
+
+    if(checkCollision(pStartX, pStartY, pSizeX, pSizeY)){
+        return 1;
+    }
+
+    return 0;
+}
+
+int Projectile::checkHit(Ennemy* ennemy){
+    int pStartX = ennemy->getPosX();
+    int pStartY = ennemy->getPosY();
+    int pSizeX = ennemy->getSizeX();
+    int pSizeY = ennemy->getSizeY();
 
     if(checkCollision(pStartX, pStartY, pSizeX, pSizeY)){
         return 1;

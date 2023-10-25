@@ -43,12 +43,15 @@ class Level{
         void addEnnemy(int type, int positionX, int positionY, int health, int id);
         int findIdEnnemy();
         int findIdItem();
+        int findIdPlayer();
         void freeze();
         void updateEntities();
         void updateGfx();
         void checkProj();
+        void checkPlayerProj();
         void checkGroundItem();
         void checkHurtEnnemy();
+        void checkHurtPlayerProj();
         void checkHurtProj();
         void screenRefresh();
     public:

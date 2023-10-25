@@ -21,9 +21,9 @@
 
 int Ennemy::checkHit(Player* player){
     int pStartX = player->getPosX()+8;
-    int pStartY = player->getPosY();
+    int pStartY = player->getPosY()+player->getCrouchPosY();
     int pSizeX = 16;
-    int pSizeY = 32;
+    int pSizeY = player->getSizeY();
 
     if(checkCollision(pStartX, pStartY, pSizeX, pSizeY)){
         if(player->getAttack() > 0){

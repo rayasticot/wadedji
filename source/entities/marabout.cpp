@@ -32,6 +32,7 @@ Marabout::Marabout(int id, int sprite, int palette, int posx, int posy, int hp){
     positionY = posy;
     speedX = 0;
     speedY = 0;
+    offsetX = 8;
     sizeX = 16;
     sizeY = 32;
     health = hp;
@@ -41,13 +42,31 @@ Marabout::Marabout(int id, int sprite, int palette, int posx, int posy, int hp){
     spriteCreated = true;
 }
 
+void Marabout::updateAnimation(){
+    if(speedX > 0){
+        NF_HflipSprite(0, spriteId, true);
+    }
+    else if(speedX < 0){
+        NF_HflipSprite(0, spriteId, false);
+    }
+    if(!alive){
+        NF_SpriteFrame(0, spriteId, 2);
+        return;
+    }
+    if(timeSinceProj > 80){
+        NF_SpriteFrame(0, spriteId, 1);
+        return;
+    }
+    NF_SpriteFrame(0, spriteId, 0);
+}
+
 void Marabout::update(){
     updateGravity();
     if(lastHealth != health){
         timeSinceProj = 90;
     }
+    proj = 0;
     if(health > 0){
-        proj = 0;
         if(timeSinceProj > 0){
             timeSinceProj--;
         }
@@ -80,6 +99,8 @@ void Marabout::update(){
     }
     positionX += speedX;
     lastHealth = health;
+
+    updateAnimation();
 }
 
 int Marabout::getProj(){

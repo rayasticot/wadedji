@@ -16,8 +16,8 @@
 #include "entities/player.hpp"
 
 
-PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceleration,
-    float vspeedlimit, float vgravityacc, float vjumpstartspeed, float hrunacc, float hrunspeedlimit)
+PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceleration, float vspeedlimit,
+    float vgravityacc, float vjumpstartspeed, float hrunacc, float hrunspeedlimit, float crouchacc, float crouchspeedlimit)
 {
     hSpeedLimit = hspeedlimit;
     hAcc = hacc;
@@ -27,6 +27,8 @@ PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceler
     vJumpStartSpeed = vjumpstartspeed;
     hRunAcc = hrunacc;
     hRunSpeedLimit = hrunspeedlimit;
+    crouchAcc = crouchacc;
+    crouchSpeedLimit = crouchspeedlimit;
 
     default_hSpeedLimit = hSpeedLimit;
     default_hAcc = hAcc;
@@ -36,6 +38,36 @@ PlayerParameters::PlayerParameters(float hspeedlimit, float hacc, float hdeceler
     default_vJumpStartSpeed = vJumpStartSpeed;
     default_hRunAcc = hRunAcc;
     default_hRunSpeedLimit = hRunSpeedLimit;
+    default_crouchAcc = crouchAcc;
+    default_crouchSpeedLimit = crouchSpeedLimit;
+}
+
+void Weapon::loadWeapon(std::string fileName){
+    std::ifstream wpnFile(fileName);
+    std::string readText;
+    std::getline(wpnFile, readText);
+    if(readText != "_WPN"){
+        NF_Error(380, "d", 3);
+    }
+    std::getline(wpnFile, readText);
+    itemId = stoi(readText);
+    std::getline(wpnFile, readText);
+    type = stoi(readText);
+    std::getline(wpnFile, readText);
+    damage = stoi(readText);
+    std::getline(wpnFile, readText);
+    cost = stoi(readText);
+    std::getline(wpnFile, readText);
+    coolDown = stoi(readText);
+    wpnFile.close();
+}
+
+int Player::getCrouchPosY(){
+    if(sizeY == 32){
+        return 0;
+    }
+
+    return 16;
 }
 
 void Player::updateLevel(int x, int y){
@@ -51,6 +83,19 @@ void Player::hurt(int damage, float direction){
     speedX = direction*(damage*2);
     hurtTime = 60;
     playSoundRandomPitch(SFX_AIE);
+}
+
+bool Player::setupItem(int item){
+    if(!effectIndex.at(item-1)){
+        obtainItem(item);
+        return true;
+    }
+    if(itemIndex.at(item-1) && effectIndex.at(item-1)){
+        return true;
+    }
+    if(inventory.at(4)) return false;
+    inventory.at(4) = item;
+    return true;
 }
 
 void Player::obtainItem(int item){
