@@ -24,8 +24,13 @@ spr/marabout_thunder
 spr/proj
 8
 8
+:
+spr/genieboss
+64
+64
 _PAL
 pal/wade_w
 pal/itemlist
 pal/ennemy
 pal/proj
+pal/genieboss

@@ -13,6 +13,7 @@ class Marabout : public Ennemy{
         Marabout(int id, int sprite, int palette, int posx, int posy, int hp, int projfind);
         void update();
         int getProj();
+        void getPlayer(Player* player){};
         ~Marabout();
 };
 

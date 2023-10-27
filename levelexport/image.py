@@ -13,12 +13,14 @@ COMMAND_BG = "grit {} -g -gTFF00FF -m -mRtf -mLs -p -ftb"
 COMMAND_CMAP = "grit {} -g -gT000000 -m -mRt -mLf -p -ftb"
 COMMAND_MOVE = "mv {} {}"
 
-MUSIC = (1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+MUSIC = (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
+BOSS = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
 ENNEMY_INFO = {
     "Item": -1,
     "Pig": 0,
     "Marabout_Fire": 1,
-    "Marabout_Thunder": 2
+    "Marabout_Thunder": 2,
+    "Boss_Genie": 3
 }
 
 
@@ -84,7 +86,7 @@ def write_bgfile(mape, back, back_scroll):
 
 
 def write_lvlfile(gfxfile, bgfile):
-    lines = ("_LVL", gfxfile, bgfile, str(MUSIC[int(sys.argv[4])]), "_PLY")
+    lines = ("_LVL", gfxfile, bgfile, str(MUSIC[int(sys.argv[4])]), str(BOSS[int(sys.argv[4])]), "_PLY")
     with open(sys.argv[1]+"data.json") as datafile:
         json_data = json.load(datafile)
         player_start = json_data["entities"]["PlayerStart"][0]

@@ -23,6 +23,7 @@
 #include "entities/ennemy.hpp"
 #include "entities/pig.hpp"
 #include "entities/marabout.hpp"
+#include "entities/genieboss.hpp"
 #include "entities/projectile.hpp"
 #include "entities/basictrajproj.hpp"
 #include "entities/sintrajproj.hpp"
@@ -31,11 +32,13 @@
 #define ENN_PIG 0
 #define ENN_MARA_F 1
 #define ENN_MARA_T 2
+#define ENN_BOSS_GENIE 3
 
 #define PIG_SPR 2
 #define MARA_F_SPR 3
 #define MARA_T_SPR 4
 #define PROJ_SPR 5
+#define BOSS_GENIE_SPR 6
 
 
 PoolItem::PoolItem(int id, int rate){
@@ -111,6 +114,9 @@ void Level::addEnnemy(int type, int positionX, int positionY, int health, int id
         case ENN_MARA_T:
             ennemyVector.emplace_back(new Marabout(id, MARA_T_SPR, 2, positionX, positionY, health, 2));
             break;
+        case ENN_BOSS_GENIE:
+            ennemyVector.emplace_back(new GenieBoss(id, BOSS_GENIE_SPR, 4, positionX, positionY, health));
+            break;
     }
 }
 
@@ -132,6 +138,11 @@ void Level::readLevelFile(std::string fileName){
     bg.readBackgroundFile(readText);
     setUpBg();
     std::getline(lvlFile, readText);
+    std::getline(lvlFile, readText);
+    boss = false;
+    if(readText == "1"){
+        boss = true;
+    }
     std::getline(lvlFile, readText);
     if(readText != "_PLY"){
         NF_Error(230, "d", 3);
@@ -164,7 +175,7 @@ void Level::readLevelFile(std::string fileName){
         std::getline(lvlFile, readText);
     }
     lvlFile.close();
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < 3; i++){
         pools.at(i).loadPoolFile("pools/"+std::to_string(i));
     }
     update();
@@ -213,6 +224,7 @@ void Level::updateEntities(){
     activeEffect.applyActive(*player);
     for(auto& i : ennemyVector){
         i->update();
+        i->getPlayer(player);
     }
     int projCounter = 0;
     for(auto& i : ennemyProj){
@@ -290,6 +302,11 @@ void Level::checkProj(){
                 ennemyProj.at(projId).reset(new SinTrajProj(projId+64, PROJ_SPR, 3, i->getPosX()+posAdd, i->getPosY()+0, i->getPosX()+posAdd+xAdd, i->getPosY()+0+yAdd, 2, 1, 1, 15));
                 break;
             }
+            case 3:
+            {
+                int projId = findIdEnnemy();
+                ennemyProj.at(projId).reset(new BasicTrajProj(projId+64, PROJ_SPR, 3, i->getPosX()+32, i->getPosY()+32, player->getPosX()+16, player->getPosY()+16, 3, 1));
+            }
         }
     }
 }
@@ -329,6 +346,7 @@ void Level::checkHurtEnnemy(){
     if(player->getSide()){
         playerDirection = -1.0;
     }
+    int identifier = 0;
     for(auto& i : ennemyVector){
         switch(i->checkHit(player)){
             case 0:
@@ -345,6 +363,9 @@ void Level::checkHurtEnnemy(){
                 if(i->getHurtTime() <= 0){
                     i->hurt(player->getMeleeDamage(), playerDirection);
                     if(i->getHealth() <= 0 && i->alive){
+                        if(!identifier && boss){
+                            boss = false;
+                        }
                         i->alive = false;
                         int item = pools.at(i->getType()).giveItem();
                         if(item){
@@ -357,6 +378,7 @@ void Level::checkHurtEnnemy(){
                 }
                 break;
         }
+        identifier++;
     }
 }
 
@@ -439,7 +461,11 @@ int Level::update(){
 
     screenRefresh();
 
-    return player->getExit();
+    if(!boss){
+        return player->getExit();
+    }
+
+    return 0;
 }
 
 Level::Level(GfxGroup* gfxGroup, Player* play, std::string fileName){

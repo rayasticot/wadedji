@@ -9,6 +9,7 @@ class Pig : public Ennemy{
         Pig(int id, int sprite, int palette, int posx, int posy, int hp);
         void update();
         int getProj();
+        void getPlayer(Player* player){};
         ~Pig();
 };
 

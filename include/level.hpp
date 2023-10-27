@@ -20,7 +20,7 @@ class DropPool{
 class Level{
     private:
         uint id;
-        std::array<DropPool, 2> pools = {};
+        std::array<DropPool, 3> pools = {};
         DropPool groundItemPool;
         LevelBackground bg;
         GfxGroup* gfx;
@@ -38,6 +38,7 @@ class Level{
 	    int oldcamY = 0;
 
         int sleep = 0;
+        bool boss = false;
 
         void setUpBg();
         void readLevelFile(std::string fileName);

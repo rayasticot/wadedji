@@ -39,6 +39,7 @@ class Ennemy : public Entity{
         int checkHit(Player* player);
         void hurt(int damage, float direction);
         int dropItem();
+        virtual void getPlayer(Player* player) = 0;
         virtual int getProj();
         virtual ~Ennemy(){};
 };
