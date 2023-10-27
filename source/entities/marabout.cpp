@@ -12,6 +12,7 @@
 
 #include "gfx.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 #include "entities/ennemy.hpp"
@@ -24,7 +25,7 @@
 #define V_SPEEDLIMIT 5
 
 
-Marabout::Marabout(int id, int sprite, int palette, int posx, int posy, int hp){
+Marabout::Marabout(int id, int sprite, int palette, int posx, int posy, int hp, int projfind){
     spriteId = id;
     positionScreenX = 100;
     positionScreenY = 100;
@@ -37,6 +38,7 @@ Marabout::Marabout(int id, int sprite, int palette, int posx, int posy, int hp){
     sizeY = 32;
     health = hp;
     type = 1;
+    projFind = projfind;
 
     NF_CreateSprite(0, spriteId, sprite, palette, positionScreenX, positionScreenY);
     spriteCreated = true;
@@ -71,7 +73,7 @@ void Marabout::update(){
             timeSinceProj--;
         }
         else{
-            proj = 1;
+            proj = projFind;
             timeSinceProj = 90;
         }
     }

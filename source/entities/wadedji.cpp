@@ -11,6 +11,7 @@
 
 #include "gfx.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 #include "entities/wadedji.hpp"
@@ -46,7 +47,12 @@ void Wadedji::updateVertical(){
         if(speedY < 0 && !(KEY_B & keysHeld())) speedY += 0.5;
         accelerationY = parameters.vGravityAcc;
         speedY += accelerationY;
-        if(speedY > parameters.vSpeedLimit) speedY = parameters.vSpeedLimit;
+        if(!pound){
+            if(speedY > parameters.vSpeedLimit) speedY = parameters.vSpeedLimit;
+        }
+        else{
+            if(speedY > parameters.vSpeedLimit+3) speedY = parameters.vSpeedLimit+3;
+        }
     }
     else{
         accelerationY = 0;
@@ -278,6 +284,9 @@ void Wadedji::update(){
                 frameAnim = 5;
                 frameTime = 0;
             }
+            if(speedY >= parameters.vSpeedLimit){
+                pound = true;
+            }
         }
         else if(!checkRangeMapCollisionX(0, positionX+10, positionY+(sizeY/2), 2) && !(KEY_DOWN & keysDown())){
             crouch = false;
@@ -287,6 +296,7 @@ void Wadedji::update(){
                 frameAnim = 0;
                 frameTime = 0;
             }
+            if(pound) pound = false;
         }
     }
     updateVertical();
@@ -298,7 +308,7 @@ void Wadedji::update(){
         updateCrouch();
         updateCrouchAnimation();
     }
-    if(inter.update(health, mana, maxMana, fcfa, &inventory)){
+    if(inter.update(health, mana, maxMana, &fcfa, &inventory)){
         if(inventory.at(4) > 0){
             obtainItem(inventory.at(4));
             inventory.at(4) = 0;

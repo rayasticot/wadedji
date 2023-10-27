@@ -13,6 +13,7 @@
 
 #include "gfx.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 

@@ -11,6 +11,7 @@
 
 #include "gfx.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 #include "entities/ennemy.hpp"
@@ -31,7 +32,7 @@ SinTrajProj::SinTrajProj(int id, int sprite, int palette, int posx, int posy, in
     speedX = targetX-positionX;
     speedY = targetY-positionY;
     normalizeSpeed();
-    s16 speedAngle = acosLerp(floatToFixed(speedX/1, 12));
+    s16 speedAngle = asinLerp(floatToFixed(speedY/1, 12));
     speedAngle += degreesToAngle(90);
     sideX = fixedToFloat(cosLerp(speedAngle), 12);
     sideY = fixedToFloat(sinLerp(speedAngle), 12);

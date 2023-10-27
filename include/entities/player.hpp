@@ -66,7 +66,7 @@ class Weapon{
 
 class Player : public Entity{
     protected:
-        static constexpr std::array<int, 5> effectIndex = {0, 0, 2, 2, 3};
+        ItemInfo itemInfo;
         //std::vector<std::unique_ptr<ActiveItem>> items;
         std::vector<int> activeIndex;
         std::array<bool, 5> itemIndex = {0, 0, 0, 0, 0};
@@ -76,6 +76,7 @@ class Player : public Entity{
         PlayerParameters parameters = PlayerParameters(2, 0.5, 0.25, 5, 0.15, -4.5, 0.3, 6, 0.3, 1);
         bool run = false;
         bool crouch = false;
+        bool pound = false;
 
         int proj = 0;
         int projDamage = 0;        
@@ -102,6 +103,7 @@ class Player : public Entity{
 
     public:
         //Player(int id, int sprite, int palette, int posx, int posy);
+        bool getPound(){ return pound; };
         int getAttack(){ return attackTime; };
         int getSide(){ return side; };
         int getExit(){ return exit; };
@@ -109,6 +111,8 @@ class Player : public Entity{
         int getHurtTime(){ return hurtTime; };
         int getHealth(){ return health; };
         int getCrouchPosY();
+        void giveMana(int ammount);
+        void giveMoney(int ammount);
 
         //void newItem(int id, bool type);
         void updateLevel(int x, int y);

@@ -9,6 +9,7 @@
 #include "soundbank_bin.h"
 
 #include "gfx.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 
 
@@ -73,7 +74,7 @@ void Interface::start(){
         items.at(i).start(itemPositions.positions_x.at(i)+16, itemPositions.positions_y.at(i)+16, i, 0);
     }
     NF_CreateSprite(1, 11, 0, 0, itemPositions.positions_x.at(5), itemPositions.positions_y.at(5));
-    NF_CreateSprite(1, 10, 2, 0, 97, 135);
+    NF_CreateSprite(1, 10, 2, 0, itemPositions.positions_x.at(5)+9, itemPositions.positions_y.at(5)+7);
     items.at(2).itemId = -2;
     items.at(3).itemId = -1;
     NF_SpriteFrame(1, 7, 1);
@@ -128,7 +129,7 @@ void Interface::drawItemDesc(int item){
     NF_WriteText16(1, 0, 0, 11, itemDesc.data());
 }
 
-bool Interface::updateHolding(std::array<int, 5>* inventory){
+bool Interface::updateHolding(std::array<int, 5>* inventory, int *fcfa){
     for(int i = 0; i < 5; i++){
         items.at(i).itemId = inventory->at(i);
         items.at(i).updateSprite();
@@ -151,7 +152,7 @@ bool Interface::updateHolding(std::array<int, 5>* inventory){
                     }
                     currentHeld = i;
                     if(items.at(i).itemId >= 1){
-                        if(effectIndex.at(items.at(i).itemId-1) != 3){
+                        if(itemInfo.effectIndex.at(items.at(i).itemId-1) != 3){
                             return true;
                         }
                     }
@@ -182,6 +183,8 @@ bool Interface::updateHolding(std::array<int, 5>* inventory){
         if(last_px >= itemPositions.positions_x.at(5)-16 && last_px < itemPositions.positions_x.at(5)+32){
             if(last_py >= itemPositions.positions_y.at(5)-16 && last_py < itemPositions.positions_y.at(5)+32){
                 if(currentHeld != 2 && currentHeld != 3){
+                    *fcfa += itemInfo.valueIndex.at(inventory->at(currentHeld)-1);
+                    mmEffect(SFX_CASH);
                     inventory->at(currentHeld) = 0;
                 }
             }
@@ -193,7 +196,7 @@ bool Interface::updateHolding(std::array<int, 5>* inventory){
 
     for(auto i : slots){
         if(inventory->at(i) > 0){
-            NF_SpriteFrame(1, 5+i, rarityIndex.at(inventory->at(i)-1));
+            NF_SpriteFrame(1, 5+i, itemInfo.rarityIndex.at(inventory->at(i)-1));
         }
         else{
             NF_SpriteFrame(1, 5+i, 0);
@@ -203,14 +206,14 @@ bool Interface::updateHolding(std::array<int, 5>* inventory){
     return false;
 }
 
-bool Interface::update(int health, int mana, int maxMana, int fcfa, std::array<int, 5>* inventory){
+bool Interface::update(int health, int mana, int maxMana, int *fcfa, std::array<int, 5>* inventory){
     bool retourne = false;
     touchRead(&touch);
     NF_ClearTextLayer(1, 0);
     drawHealth(health);
     drawMana(mana, maxMana);
-    drawFcfa(fcfa);
-    retourne = updateHolding(inventory);
+    drawFcfa(*fcfa);
+    retourne = updateHolding(inventory, fcfa);
     drawItemDesc(inventory->at(4));
     NF_UpdateVramMap(1, 1);
     NF_UpdateTextLayers();

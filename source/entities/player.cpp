@@ -12,6 +12,7 @@
 
 #include "gfx.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 
@@ -70,6 +71,18 @@ int Player::getCrouchPosY(){
     return 16;
 }
 
+void Player::giveMana(int ammount){
+    mana += ammount;
+    if(mana > maxMana){
+        mana = maxMana;
+    }
+}
+
+void Player::giveMoney(int ammount){
+    fcfa += ammount;
+    mmEffect(SFX_CASH);
+}
+
 void Player::updateLevel(int x, int y){
     positionX = x;
     positionY = y;
@@ -86,11 +99,12 @@ void Player::hurt(int damage, float direction){
 }
 
 bool Player::setupItem(int item){
-    if(!effectIndex.at(item-1)){
+    if(!itemInfo.effectIndex.at(item-1)){
         obtainItem(item);
         return true;
     }
-    if(itemIndex.at(item-1) && effectIndex.at(item-1)){
+    if(itemIndex.at(item-1) && itemInfo.effectIndex.at(item-1)){
+        giveMoney(itemInfo.valueIndex.at(item-1));
         return true;
     }
     if(inventory.at(4)) return false;
@@ -103,13 +117,13 @@ void Player::obtainItem(int item){
         return;
     }
     int itemStorage = item-1;
-    if(!effectIndex.at(itemStorage) || !itemIndex.at(itemStorage)){
+    if(!itemInfo.effectIndex.at(itemStorage) || !itemIndex.at(itemStorage)){
         applyItemEffect(item);
     }
     if(!itemIndex.at(itemStorage)){
         itemIndex.at(itemStorage) = true;
     }
-    if(effectIndex.at(itemStorage) == 2){
+    if(itemInfo.effectIndex.at(itemStorage) == 2){
         activeIndex.emplace_back(itemStorage);
     }
 }

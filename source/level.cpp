@@ -15,6 +15,7 @@
 #include "gfx.hpp"
 #include "background.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 #include "entities/wadedji.hpp"
@@ -28,11 +29,13 @@
 #include "level.hpp"
 
 #define ENN_PIG 0
-#define ENN_MARA 1
+#define ENN_MARA_F 1
+#define ENN_MARA_T 2
 
 #define PIG_SPR 2
 #define MARA_F_SPR 3
-#define PROJ_SPR 4
+#define MARA_T_SPR 4
+#define PROJ_SPR 5
 
 
 PoolItem::PoolItem(int id, int rate){
@@ -93,15 +96,20 @@ void Level::addEnnemy(int type, int positionX, int positionY, int health, int id
     switch(type){
         case -1:
         {
+            groundItemPool.loadPoolFile("pools/"+std::to_string(health));
+            int item = groundItemPool.giveItem();
             int projId = findIdItem();
-            groundItems.at(projId).reset(new GroundItem(projId+112, 1, 1, positionX, positionY, health));
+            groundItems.at(projId).reset(new GroundItem(projId+112, 1, 1, positionX, positionY, item));
             break;
         }
         case ENN_PIG:
             ennemyVector.emplace_back(new Pig(id, PIG_SPR, 2, positionX, positionY, health));
             break;
-        case ENN_MARA:
-            ennemyVector.emplace_back(new Marabout(id, MARA_F_SPR, 2, positionX, positionY, health));
+        case ENN_MARA_F:
+            ennemyVector.emplace_back(new Marabout(id, MARA_F_SPR, 2, positionX, positionY, health, 1));
+            break;
+        case ENN_MARA_T:
+            ennemyVector.emplace_back(new Marabout(id, MARA_T_SPR, 2, positionX, positionY, health, 2));
             break;
     }
 }
@@ -260,11 +268,26 @@ void Level::checkProj(){
             case 1:
             {
                 int projId = findIdEnnemy();
-                bool ennemySide = player->getPosX()-i->getPosX() < 0;
+                bool ennemySide = player->getPosX()-(i->getPosX()) < 0;
                 NF_HflipSprite(0, i->getId(), ennemySide);
                 int posAdd = 24;
                 if(ennemySide) posAdd = 8;
-                ennemyProj.at(projId).reset(new SinTrajProj(projId+64, PROJ_SPR, 3, i->getPosX()+posAdd, i->getPosY()+12, i->getPosX()-(i->getPosX()+posAdd-(player->getPosX()+16)), i->getPosY()+12, 2, 1, 2, 15));
+                ennemyProj.at(projId).reset(new SinTrajProj(projId+64, PROJ_SPR, 3, i->getPosX()+posAdd, i->getPosY()+0, i->getPosX()+posAdd-(i->getPosX()+posAdd-(player->getPosX()+posAdd)), i->getPosY()+0, 2, 1, 1, 15));
+                break;
+            }
+            case 2:
+            {
+                int projId = findIdEnnemy();
+                bool ennemySide = player->getPosX()-(i->getPosX()) < 0;
+                bool ennemySideY = player->getPosY()-(i->getPosY()) < 0;
+                NF_HflipSprite(0, i->getId(), ennemySide);
+                int posAdd = 24;
+                if(ennemySide) posAdd = 8;
+                int xAdd = 1;
+                if(ennemySide) xAdd = -1;
+                int yAdd = 1;
+                if(ennemySideY) yAdd = -1;
+                ennemyProj.at(projId).reset(new SinTrajProj(projId+64, PROJ_SPR, 3, i->getPosX()+posAdd, i->getPosY()+0, i->getPosX()+posAdd+xAdd, i->getPosY()+0+yAdd, 2, 1, 1, 15));
                 break;
             }
         }
@@ -283,7 +306,7 @@ void Level::checkPlayerProj(){
             if(side) posAdd = 8;
             int trajAdd = 1;
             if(side) trajAdd = -1;
-            playerProj.at(projId).reset(new SinTrajProj(projId+88, PROJ_SPR, 3, player->getPosX()+posAdd, player->getPosY()+12, player->getPosX()+trajAdd+posAdd, player->getPosY()+12, 3, player->getProjDamage(), 2, 15));
+            playerProj.at(projId).reset(new SinTrajProj(projId+88, PROJ_SPR, 3, player->getPosX()+posAdd, player->getPosY()+12, player->getPosX()+trajAdd+posAdd, player->getPosY()+12, 3, player->getProjDamage(), 1, 15));
             break;
         }
     }
@@ -328,6 +351,7 @@ void Level::checkHurtEnnemy(){
                             int projId = findIdItem();
                             groundItems.at(projId).reset(new GroundItem(projId+112, 1, 1, i->getPosX(), i->getPosY(), item));
                         }
+                        player->giveMana(5);
                     }
                     mmEffect(SFX_HURT);
                 }
@@ -382,7 +406,9 @@ void Level::checkHurtPlayerProj(){
                             }
                         }
                     }
-                    proj->kill();
+                    if(ennemy->alive){
+                        proj->kill();
+                    }
                     break;
             }
         }

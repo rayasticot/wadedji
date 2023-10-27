@@ -15,6 +15,7 @@
 #include "gfx.hpp"
 #include "background.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 #include "entities/wadedji.hpp"
@@ -82,6 +83,7 @@ Game::Game(int levelId){
     mmLoadEffect(SFX_OUI);
     mmLoadEffect(SFX_ENVOYER);
     mmLoadEffect(SFX_AIE);
+    mmLoadEffect(SFX_CASH);
     while(1){
         std::string currentLevelName = findLevel(F_LEVEL_LIST, currentLevel);
         std::string gfxName = getGfx(currentLevelName);

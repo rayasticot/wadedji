@@ -3,7 +3,7 @@
 
 class ItemPositions{
     public:
-        static constexpr std::array<int, 6> positions_x = {160, 208, 112, 160, 24, 88};
+        static constexpr std::array<int, 6> positions_x = {160, 208, 112, 160, 80, 16};
         static constexpr std::array<int, 6> positions_y = {0, 48, 48, 96, 128, 128};
 };
 
@@ -30,8 +30,7 @@ class InterfaceItem{
 class Interface{
     private:
         ItemPositions itemPositions;
-        static constexpr std::array<int, 5> effectIndex = {0, 0, 2, 2, 3};
-        static constexpr std::array<int, 5> rarityIndex = {2, 2, 2, 2, 2};
+        ItemInfo itemInfo;
 
         std::array<InterfaceItem, 5> items;
 
@@ -52,10 +51,10 @@ class Interface{
         void drawHealth(int health);
         void drawMana(int mana, int maxMana);
         void drawFcfa(int fcfa);
-        bool updateHolding(std::array<int, 5>* inventory);
+        bool updateHolding(std::array<int, 5>* inventory, int *fcfa);
     public:
         void start();
-        bool update(int health, int mana, int maxMana, int fcfa, std::array<int, 5>* inventory);
+        bool update(int health, int mana, int maxMana, int *fcfa, std::array<int, 5>* inventory);
 };
 
 #endif

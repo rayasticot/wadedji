@@ -14,6 +14,7 @@
 
 #include "gfx.hpp"
 #include "entities/entity.hpp"
+#include "item.hpp"
 #include "interface.hpp"
 #include "entities/player.hpp"
 #include "entities/ennemy.hpp"
@@ -26,6 +27,9 @@ int Ennemy::checkHit(Player* player){
     int pSizeY = player->getSizeY();
 
     if(checkCollision(pStartX, pStartY, pSizeX, pSizeY)){
+        if(player->getPound()){
+            return 2;
+        }
         if(player->getAttack() > 0){
             if(!player->getSide()){
                 pStartX += pSizeX;

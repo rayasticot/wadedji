@@ -21,6 +21,7 @@ class Level{
     private:
         uint id;
         std::array<DropPool, 2> pools = {};
+        DropPool groundItemPool;
         LevelBackground bg;
         GfxGroup* gfx;
         Player* player;
