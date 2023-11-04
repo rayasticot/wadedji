@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <array>
 #include <unordered_map>
 #include <map>
@@ -16,8 +17,12 @@
 #include "entities/player.hpp"
 #include "entities/wadedji.hpp"
 
+#include "fileconstants.hpp"
 
-Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy){
+#define TOTALITEMS 5
+
+
+Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy, int* diff, int* level, int* profil){
     spriteId = id;
     sprite = sprite_;
     palette = palette_;
@@ -29,6 +34,102 @@ Wadedji::Wadedji(int id, int sprite_, int palette_, int posx, int posy){
     speedY = 0;
     sizeX = 32;
     sizeY = 32;
+    difficulty = diff;
+    currentLevel = level;
+    profile = profil;
+    loadSave();
+}
+
+void Wadedji::loadSave(){
+    std::ifstream read(saveFilePath+"wade"+std::to_string(*profile)+".sav");
+    std::string readText;
+    std::getline(read, readText);
+    if(readText != "_SAV"){
+        NF_Error(5001, "d", 3);
+    }
+    std::getline(read, readText);
+    std::getline(read, readText);
+    std::getline(read, readText);
+    std::getline(read, readText);
+    std::getline(read, readText);
+    if(readText != "_PLA"){
+        NF_Error(5002, "d", 3);
+    }
+    std::getline(read, readText);
+    health = stoi(readText);
+    std::getline(read, readText);
+    mana = stoi(readText);
+    std::getline(read, readText);
+    fcfa = stoi(readText);
+    std::getline(read, readText);
+    maxHealth = stoi(readText);
+    std::getline(read, readText);
+    maxMana = stoi(readText);
+    std::getline(read, readText);
+    meleeDamage = stoi(readText);
+    std::getline(read, readText);
+    magicDamage = stoi(readText);
+    std::getline(read, readText);
+    if(readText != "_INV"){
+        NF_Error(5003, "d", 3);
+    }
+    for(int i = 0; i < 5; i++){
+        std::getline(read, readText);
+        inventory.at(i) = stoi(readText);
+    }
+    std::getline(read, readText);
+    if(readText != "_ITMINDEX"){
+        NF_Error(5004, "d", 3);
+    }
+    for(int i = 0; i < TOTALITEMS; i++){
+        std::getline(read, readText);
+        itemIndex.at(i) = stoi(readText);
+    }
+    std::getline(read, readText);
+    if(readText != "_ITMACTIVE"){
+        NF_Error(5005, "d", 3);
+    }
+    std::getline(read, readText);
+    while(readText != "\\"){
+        activeIndex.emplace_back(stoi(readText));
+        std::getline(read, readText);
+    }
+    read.close();
+}
+
+void Wadedji::saveGame(){
+    std::ofstream write(saveFilePath+"wade"+std::to_string(*profile)+".sav");
+    write << "_SAV" << std::endl;
+    write << "1" << std::endl;
+    write << std::to_string(*difficulty) << std::endl;
+    if(health == 0){
+        write << "0" << std::endl;
+    }
+    else{
+        write << "1" << std::endl;
+    }
+    write << std::to_string(*currentLevel) << std::endl;
+    write << "_PLA" << std::endl;
+    write << std::to_string(health) << std::endl;
+    write << std::to_string(mana) << std::endl;
+    write << std::to_string(fcfa) << std::endl;
+    write << std::to_string(maxHealth) << std::endl;
+    write << std::to_string(maxMana) << std::endl;
+    write << std::to_string(meleeDamage) << std::endl;
+    write << std::to_string(magicDamage) << std::endl;
+    write << "_INV" << std::endl;
+    for(int i = 0; i < 5; i++){
+        write << std::to_string(inventory.at(i)) << std::endl;
+    }
+    write << "_ITMINDEX" << std::endl;
+    for(int i = 0; i < 5; i++){
+        write << std::to_string(itemIndex.at(i)) << std::endl;
+    }
+    write << "_ITMACTIVE" << std::endl;
+    for(auto i : activeIndex){
+        write << std::to_string(i) << std::endl;
+    }
+    write << "\\";
 }
 
 void Wadedji::createSprite(){

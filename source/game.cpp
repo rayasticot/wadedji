@@ -27,6 +27,8 @@
 #include "level.hpp"
 #include "game.hpp"
 
+#include "fileconstants.hpp"
+
 #define F_LEVEL_LIST "level_list"
 
 void fadeOut();
@@ -76,9 +78,53 @@ uint Game::getMusic(std::string fileName){
     return stoi(readText);
 }
 
-Game::Game(int levelId){
-    currentLevel = levelId;
-    player = new Wadedji(0, 0, 0, 229, 60);
+void Game::loadSave(bool continuer, int profil){
+    if(!continuer){
+        resetSave(profil);
+    }
+    std::ifstream read(saveFilePath+"wade"+std::to_string(profil)+".sav");
+    std::string readText;
+    std::getline(read, readText);
+    if(readText != "_SAV"){
+        NF_Error(4000, "asd", 3);
+    }
+    std::getline(read, readText);
+    std::getline(read, readText);
+    difficulty = stoi(readText);
+    std::getline(read, readText);
+    std::getline(read, readText);
+    currentLevel = stoi(readText);
+    read.close();
+}
+
+void Game::resetSave(int profil){
+    std::ofstream write(saveFilePath+"wade"+std::to_string(profil)+".sav");
+    write << "_SAV" << std::endl;
+    write << "1" << std::endl;
+    write << std::to_string(difficulty) << std::endl;
+    write << "1" << std::endl;
+    write << "0" << std::endl;
+    std::ifstream read("emptysave");
+    std::string readText;
+    for(int i = 0; i < 5; i++){
+        std::getline(read, readText);
+    }
+    std::vector<std::string> playerData;
+    while(std::getline(read, readText)){
+        playerData.emplace_back(readText);
+    }
+    read.close();
+    for(auto i : playerData){
+        write << i << std::endl;
+    }
+    write.close();
+}
+
+Game::Game(bool continuer, int profil){
+    profile = profil;
+    loadSave(continuer, profile);
+    //currentLevel = levelId;
+    player = new Wadedji(0, 0, 0, 229, 60, &difficulty, &currentLevel, &profile);
     mmLoadEffect(SFX_HURT);
     mmLoadEffect(SFX_OUI);
     mmLoadEffect(SFX_ENVOYER);
@@ -110,10 +156,17 @@ Game::Game(int levelId){
             oldMusic = music;
         }
         fadeIn();
-        while(level.update() == 0);
+        int levelOutput = 0;
+        while(levelOutput == 0){
+            levelOutput = level.update();
+        };
         fadeOut();
         currentLevel++;
+        player->saveGame();
         oldGfx = gfxName;
+        if(levelOutput == 2){
+            break;
+        }
     }
 }
 

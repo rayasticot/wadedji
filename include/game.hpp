@@ -5,6 +5,8 @@ class Game{
     private:
         Player* player;
         GfxGroup gfx;
+        int profile = 0;
+        int difficulty = 1;
         int currentLevel = 0;
         uint music;
         uint oldMusic = 22960;
@@ -13,8 +15,10 @@ class Game{
         std::string findLevel(std::string fileName, int levelId);
         std::string getGfx(std::string fileName);
         uint getMusic(std::string fileName);
+        void loadSave(bool continuer, int profil);
+        void resetSave(int profil);
     public:
-        Game(int levelId);
+        Game(bool continuer, int profil);
         ~Game();
 };
 

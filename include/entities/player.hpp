@@ -86,6 +86,10 @@ class Player : public Entity{
         int side = 0;
         int hurtTime = 0;
 
+        int* difficulty;
+        int* currentLevel;
+        int* profile;
+
         u32 hurtTimer = 0;
         u32 timer = 0;
         u32 coolDown = 0;
@@ -113,6 +117,9 @@ class Player : public Entity{
         int getCrouchPosY();
         void giveMana(int ammount);
         void giveMoney(int ammount);
+
+        virtual void loadSave() = 0;
+        virtual void saveGame() = 0;
 
         //void newItem(int id, bool type);
         void updateLevel(int x, int y);

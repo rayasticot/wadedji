@@ -1,0 +1,27 @@
+_SAV
+0 # Started
+1 # Difficulty
+0 # Alive
+0 # Level
+_PLA
+8 # health
+100 # mana
+100 # fcfa
+8 # max health
+100 # max mana
+2 # melee damage
+2 # magic damage
+_INV
+0
+0
+-1
+-2
+0
+_ITMINDEX
+0
+0
+0
+0
+0
+_ITMACTIVE
+\

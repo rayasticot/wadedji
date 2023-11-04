@@ -14,7 +14,9 @@ class Wadedji : public Player{
         void updateCrouchAnimation();
         void updateWeapons();
     public:
-        Wadedji(int id, int sprite_, int palette_, int posx, int posy);
+        Wadedji(int id, int sprite_, int palette_, int posx, int posy, int* diff, int* level, int* profil);
+        void loadSave();
+        void saveGame();
         void createSprite();
         void deleteSprite();
         void update();

@@ -13,7 +13,7 @@ COMMAND_BG = "grit {} -g -gTFF00FF -m -mRtf -mLs -p -ftb"
 COMMAND_CMAP = "grit {} -g -gT000000 -m -mRt -mLf -p -ftb"
 COMMAND_MOVE = "mv {} {}"
 
-MUSIC = (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
+MUSIC = (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2)
 BOSS = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
 ENNEMY_INFO = {
     "Item": -1,
