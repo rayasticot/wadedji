@@ -144,7 +144,7 @@ Game::Game(bool continuer, int profil){
             player->createSprite();
         }
         //player = std::make_unique<Player>(Wadedji(0, 0, 0, 0, 0));
-        Level level(&gfx, player, currentLevelName);
+        Level level(player, currentLevelName);
         music = getMusic(currentLevelName);
         if(music != oldMusic){
             if(oldMusic != 22960){
@@ -162,14 +162,47 @@ Game::Game(bool continuer, int profil){
         };
         fadeOut();
         currentLevel++;
-        player->saveGame();
+        if(levelOutput != 2){
+            player->saveGame();
+        }
         oldGfx = gfxName;
+        if(currentLevel == 11){
+            break;
+        }
         if(levelOutput == 2){
             break;
         }
     }
+    mmStop();
+    mmEffectCancelAll();
+    mmUnloadEffect(SFX_HURT);
+    mmUnloadEffect(SFX_OUI);
+    mmUnloadEffect(SFX_ENVOYER);
+    mmUnloadEffect(SFX_AIE);
+    mmUnloadEffect(SFX_CASH);
+    mmUnload(getMod(oldMusic));
 }
 
 Game::~Game(){
     delete player;
+    gfx.unloadSpr(128);
+    gfx.unloadPal(16);
+    if(currentLevel == 11){
+        fadeIn();
+        NF_LoadTiledBg("back/merci", "merci", 256, 256);
+        NF_CreateTiledBg(0, 0, "merci");
+        while(1){
+            scanKeys();
+            NF_SpriteOamSet(0);
+            NF_SpriteOamSet(1);
+            swiWaitForVBlank();
+            oamUpdate(&oamMain);
+            oamUpdate(&oamSub);
+
+            if(KEY_A & keysDown()){
+                break;
+            }
+        }
+        NF_UnloadTiledBg("merci");
+    }
 }

@@ -28,9 +28,14 @@ spr/proj
 spr/genieboss
 64
 64
+:
+spr/blood
+8
+8
 _PAL
 pal/wade_w
 pal/itemlist
 pal/ennemy
 pal/proj
 pal/genieboss
+pal/blood

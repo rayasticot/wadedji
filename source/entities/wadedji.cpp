@@ -409,7 +409,7 @@ void Wadedji::update(){
         updateCrouch();
         updateCrouchAnimation();
     }
-    if(inter.update(health, mana, maxMana, &fcfa, &inventory)){
+    if(inter.update(health, mana, maxMana, &fcfa, &inventory, *currentLevel)){
         if(inventory.at(4) > 0){
             obtainItem(inventory.at(4));
             inventory.at(4) = 0;
@@ -422,9 +422,9 @@ void Wadedji::update(){
     else{
         exit = 0;
     }
-    if(KEY_SELECT & keysDown()){ // A RETIRER PLUS TARD SEULEMENT POUR TESTER LE JEU
+    /*if(KEY_SELECT & keysDown()){ // A RETIRER PLUS TARD SEULEMENT POUR TESTER LE JEU
         exit = 1;
-    }
+    }*/
 }
 
 int Wadedji::getProj(){

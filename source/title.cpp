@@ -16,6 +16,19 @@ void fadeIn();
 void fadeOut();
 
 
+void Title::introNul(){
+    NF_LoadTiledBg("back/intro_nul", "nul", 256, 256);
+    NF_CreateTiledBg(0, 0, "nul");
+    NF_ShowSprite(1, 2, false);
+    while(1){
+        update();
+        if(KEY_A & keysDown()){
+            break;
+        }
+    }
+    NF_UnloadTiledBg("nul");
+}
+
 void Title::update(){
     scanKeys();
     NF_SpriteOamSet(0);
@@ -95,6 +108,7 @@ int Title::startScreen(bool fade){
     if(fade){
         fadeIn();
     }
+    scanKeys();
     while(!(KEY_START & keysDown()) && !(KEY_A & keysDown())){
         update();
     }
@@ -182,7 +196,7 @@ int Title::menuScreen(){
         }
         NF_UpdateTextLayers();
     }
-    if(retourne < 3){
+    if(retourne < 3 || !started.at(profile)){
         NF_ClearTextLayer16(1, 0);
     }
     NF_UpdateTextLayers();
@@ -221,6 +235,9 @@ Title::Title(){
             default:
                 break;
         }
+    }
+    if(!started.at(profile)){
+        introNul();
     }
     end();
 }

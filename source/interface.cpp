@@ -82,6 +82,29 @@ void Interface::start(){
     NF_SpriteFrame(1, 11, 1);
 }
 
+void Interface::destroy(){
+    NF_DeleteTiledBg(1, 1);
+    NF_DeleteTiledBg(1, 3);
+    NF_DeleteTextLayer(1, 0);
+    NF_DeleteSprite(1, 5);
+    NF_DeleteSprite(1, 6);
+    NF_DeleteSprite(1, 7);
+    NF_DeleteSprite(1, 8);
+    NF_DeleteSprite(1, 9);
+    NF_DeleteSprite(1, 10);
+    NF_DeleteSprite(1, 11);
+    
+    NF_UnloadTiledBg("bottommap");
+    NF_UnloadTextFont("font");
+    NF_UnloadTiledBg("fond");
+    NF_UnloadSpriteGfx(128);
+    NF_FreeSpriteGfx(1, 0);
+    NF_UnloadSpriteGfx(127);
+    NF_FreeSpriteGfx(1, 2);
+    NF_UnloadSpritePal(16);
+    NF_FreeSpriteGfx(1, 1);
+}
+
 void Interface::drawHealth(int health){
     for(int i = 0; i < 32; i++){
         NF_SetTileOfMap(1, 1, i, (i/16), 0);
@@ -110,9 +133,12 @@ void Interface::drawMana(int mana, int maxMana){
     }
 }
 
-void Interface::drawFcfa(int fcfa){
+void Interface::drawFcfa(int fcfa, int level){
     std::string argent = std::to_string(fcfa)+" FCFA";
     NF_WriteText16(1, 0, 0, 3, argent.data());
+    std::string levelString = std::to_string(level);
+    int levelStringPos = 32-levelString.length();
+    NF_WriteText16(1, 0, levelStringPos, 0, levelString.data());
 }
 
 void Interface::readItemDesc(std::string fileName){
@@ -206,17 +232,21 @@ bool Interface::updateHolding(std::array<int, 5>* inventory, int *fcfa){
     return false;
 }
 
-bool Interface::update(int health, int mana, int maxMana, int *fcfa, std::array<int, 5>* inventory){
+bool Interface::update(int health, int mana, int maxMana, int *fcfa, std::array<int, 5>* inventory, int level){
     bool retourne = false;
     touchRead(&touch);
     NF_ClearTextLayer(1, 0);
     drawHealth(health);
     drawMana(mana, maxMana);
-    drawFcfa(*fcfa);
+    drawFcfa(*fcfa, level);
     retourne = updateHolding(inventory, fcfa);
     drawItemDesc(inventory->at(4));
     NF_UpdateVramMap(1, 1);
     NF_UpdateTextLayers();
 
     return retourne;
+}
+
+Interface::~Interface(){
+    destroy();
 }

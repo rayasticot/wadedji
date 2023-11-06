@@ -27,6 +27,7 @@
 #include "entities/projectile.hpp"
 #include "entities/basictrajproj.hpp"
 #include "entities/sintrajproj.hpp"
+#include "entities/bloodproj.hpp"
 #include "level.hpp"
 
 #define ENN_PIG 0
@@ -212,6 +213,18 @@ int Level::findIdItem(){
     return 229;
 }
 
+void Level::placeBlood(){
+    for(auto& i : playerProj){
+        if(i == NULL) continue;
+        int projId = i->getId()-88;
+        playerProj.at(projId) = NULL;
+    }
+    for(int i = 0; i < 20; i++){
+        int angle = rand()%360;
+        playerProj.at(i).reset(new BloodProj(i+88, 7, 5, player->getPosX()+16, player->getPosY()+12, angle));
+    }
+}
+
 void Level::freeze(){
     while(sleep > 0){
         swiWaitForVBlank();
@@ -220,7 +233,9 @@ void Level::freeze(){
 }
 
 void Level::updateEntities(){
-    player->update();
+    if(player->getHealth() > 0){
+        player->update();
+    }
     activeEffect.applyActive(*player);
     for(auto& i : ennemyVector){
         i->update();
@@ -461,6 +476,23 @@ int Level::update(){
 
     screenRefresh();
 
+    if(player->getHealth() <= 0){
+        int timerBeforeDeath = 0;
+        placeBlood();
+        player->saveGame();
+        NF_ShowSprite(0, player->getId(), false);
+        player->update();
+        while(timerBeforeDeath < 300){
+            scanKeys();
+            freeze();
+            updateEntities();
+            updateGfx();
+            screenRefresh();
+            timerBeforeDeath++;
+        }
+        return 2;
+    }
+
     if(!boss){
         return player->getExit();
     }
@@ -468,8 +500,7 @@ int Level::update(){
     return 0;
 }
 
-Level::Level(GfxGroup* gfxGroup, Player* play, std::string fileName){
-    gfx = gfxGroup;
+Level::Level(Player* play, std::string fileName){
     player = play;
     readLevelFile(fileName);
 }

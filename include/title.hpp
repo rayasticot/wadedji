@@ -20,6 +20,7 @@ class Title{
         void loadSprites();
         void update();
         void end();
+        void introNul();
     public:
         bool getAction();
         bool getProfil(){ return profile; };

@@ -88,8 +88,10 @@ int main(int argc, char **argv){
 		Cinematic cinema("cinematic/intro");
 		cinema.play();
 	}
-	Title title;
-	Game game(title.getAction(), title.getProfil());
+	while(1){
+		Title title;
+		Game game(title.getAction(), title.getProfil());
+	}
 
 	return 0;
 }

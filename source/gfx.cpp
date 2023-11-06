@@ -28,11 +28,11 @@ void Sprite::loadSpr(){
 }
 
 void Sprite::unloadSpr(){
-    if(loaded == true){
+    //if(loaded == true){
         NF_UnloadSpriteGfx(slotMemory);
         NF_FreeSpriteGfx(screenNumber, slotMemory);
         loaded = false;
-    }
+    //}
 }
 
 /*Sprite::~Sprite(){
@@ -54,10 +54,10 @@ void Palette::loadPal(){
 }
 
 void Palette::unloadPal(){
-    if(loaded == true){
+    //if(loaded == true){
         NF_UnloadSpritePal(slotMemory);
         loaded = false;
-    }
+    //}
 }
 
 /*Palette::~Palette(){

@@ -50,7 +50,11 @@ int CinematicFrame::addCalcX(int timer){
             case 0:
                 break;
             case 1:
-                return (int)(fixedToFloat(tanLerp(degreesToAngle((60-(time-timer))*1.5)), 12)*22);
+                int addX = (int)(fixedToFloat(tanLerp(degreesToAngle((60-(time-timer))*1.5)), 12)*22);
+                if(addX > 256){
+                    addX = 256;
+                }
+                return addX;
                 break;
         }
     }
@@ -128,23 +132,36 @@ Cinematic::Cinematic(std::string filename){
 
 void Cinematic::play(){
     mmLoad(MOD_INTRO);
-    mmStart(MOD_INTRO, MM_PLAY_ONCE);
-    for(auto frame : frames){
+    for(auto& frame : frames){
         frame.load();
+    }
+    mmStart(MOD_INTRO, MM_PLAY_ONCE);
+    for(auto& frame : frames){
         frame.create();
+        bool casser = false;
         while(timer < frame.time){
             NF_ScrollBg(0, 0, 128+frame.addCalcX(timer), 160+frame.addCalcY(timer));
+            scanKeys();
             NF_SpriteOamSet(0);
             NF_SpriteOamSet(1);
             swiWaitForVBlank();
             oamUpdate(&oamMain);
             oamUpdate(&oamSub);
+            if(KEY_START & keysDown()){
+                casser = true;
+                break;
+            }
             timer++;
         }
         timer = 0;
         frame.destroy();
-        frame.unLoad();
+        if(casser){
+            break;
+        }
     }
     mmStop();
+    for(auto& frame : frames){
+        frame.unLoad();
+    }
     mmUnload(MOD_INTRO);
 }
